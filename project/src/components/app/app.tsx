@@ -7,7 +7,6 @@ type AppProps = {
 
 function App({cardNumber, isAuthorized}: AppProps): JSX.Element {
   return <Main cardNumber={cardNumber} isAuthorized={isAuthorized} />;
-
 }
 
 export default App;
