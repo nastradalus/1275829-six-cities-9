@@ -1,9 +1,11 @@
+import {AuthorizationStatus} from '../../const';
+
 type HeaderProps = {
-  isAuthorized: boolean,
+  authorizationStatus: AuthorizationStatus,
   isLoginPage?: boolean
 };
 
-function Header({isAuthorized, isLoginPage= false}: HeaderProps): JSX.Element {
+function Header({authorizationStatus, isLoginPage = false}: HeaderProps): JSX.Element {
   return (
     <header className="header">
       <div className="container">
@@ -14,7 +16,7 @@ function Header({isAuthorized, isLoginPage= false}: HeaderProps): JSX.Element {
             </a>
           </div>
           {
-            isLoginPage
+            !isLoginPage
               ?
               <nav className="header__nav">
                 <ul className="header__nav-list">
@@ -23,14 +25,14 @@ function Header({isAuthorized, isLoginPage= false}: HeaderProps): JSX.Element {
                       <div className="header__avatar-wrapper user__avatar-wrapper">
                       </div>
                       {
-                        isAuthorized
+                        authorizationStatus === AuthorizationStatus.Auth
                           ? <span className="header__user-name user__name">Oliver.conner@gmail.com</span>
                           : <span className="header__login">Sign in</span>
                       }
                     </a>
                   </li>
                   {
-                    (isAuthorized)
+                    (authorizationStatus === AuthorizationStatus.Auth)
                       ?
                       <li className="header__nav-item">
                         <a className="header__nav-link" href="#">

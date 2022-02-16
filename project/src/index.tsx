@@ -1,14 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/app/app';
+import {AuthorizationStatus} from './const';
 
 const Setting = {
   CARD_COUNT: 5,
-  IS_AUTHORIZED: true,
+  AUTHORIZATION_STATUS: AuthorizationStatus.NoAuth,
 };
 
 ReactDOM.render(
   <React.StrictMode>
-    <App cardNumber={Setting.CARD_COUNT} isAuthorized={Setting.IS_AUTHORIZED} />
+    <App cardNumber={Setting.CARD_COUNT} authorizationStatus={Setting.AUTHORIZATION_STATUS}/>
   </React.StrictMode>,
   document.getElementById('root'));
