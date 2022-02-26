@@ -7,18 +7,19 @@ import Property from '../../pages/property/property';
 import NoPage from '../../pages/no-page/no-page';
 import NoAuthRoute from '../no-auth-route/no-auth-route';
 import AuthRoute from '../auth-route/auth-route';
+import {Offer} from '../../types/offer';
 
 type AppProps = {
   authorizationStatus: AuthorizationStatus,
-  cardNumber: number
+  offers: Offer[]
 };
 
-function App({cardNumber, authorizationStatus}: AppProps): JSX.Element {
+function App({authorizationStatus, offers}: AppProps): JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
         <Route path={AppRoute.Main} element={
-          <Main cardNumber={cardNumber} authorizationStatus={authorizationStatus}/>
+          <Main authorizationStatus={authorizationStatus} offers={offers}/>
         }
         />
         <Route path={AppRoute.SignIn} element={
@@ -29,15 +30,15 @@ function App({cardNumber, authorizationStatus}: AppProps): JSX.Element {
         />
         <Route path={AppRoute.Favorites} element={
           <AuthRoute authorizationStatus={authorizationStatus}>
-            <Favorites cardNumber={2}/>
+            <Favorites offers={offers}/>
           </AuthRoute>
         }
         />
         <Route path={AppRoute.Room}>
           <Route index element={<Navigate to={AppRoute.Main}/>}/>
-          <Route path={AppRoute.RoomId} element={<Property authorizationStatus={authorizationStatus}/>}/>
+          <Route path={AppRoute.RoomId} element={<Property authorizationStatus={authorizationStatus} offers={offers}/>}/>
         </Route>
-        <Route path="*" element={NoPage()}/>
+        <Route path="*" element={<NoPage authorizationStatus={authorizationStatus}/>}/>
       </Routes>
     </BrowserRouter>
   );

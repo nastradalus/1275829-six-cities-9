@@ -2,24 +2,41 @@ import Header from '../../components/header/header';
 import FavoriteList from '../../components/favorite-list/favorite-list';
 import Footer from '../../components/footer/footer';
 import {AuthorizationStatus} from '../../const';
+import {Offer, OffersByCity} from '../../types/offer';
 
-type FavoritesProps = {
-  cardNumber: number
+const sortOffersByCity = (offers: Offer[]): OffersByCity => {
+  const offersByCity: OffersByCity = {};
+
+  offers.forEach((offer) => {
+    if (typeof offersByCity[offer.city] === 'undefined') {
+      offersByCity[offer.city] = [];
+    }
+
+    if (offer.isFavorite) {
+      offersByCity[offer.city].push(offer);
+    }
+  });
+
+  return offersByCity;
 };
 
-function Favorites({cardNumber}: FavoritesProps): JSX.Element {
+type FavoritesProps = {
+  offers: Offer[]
+};
+
+function Favorites({offers}: FavoritesProps): JSX.Element {
   return (
     <div className="page">
       <Header authorizationStatus={AuthorizationStatus.Auth}/>
 
       {
-        cardNumber
+        offers.length
           ?
           <main className="page__main page__main--favorites">
             <div className="page__favorites-container container">
               <section className="favorites">
                 <h1 className="favorites__title">Saved listing</h1>
-                <FavoriteList/>
+                <FavoriteList offersByCity={sortOffersByCity(offers)}/>
               </section>
             </div>
           </main>

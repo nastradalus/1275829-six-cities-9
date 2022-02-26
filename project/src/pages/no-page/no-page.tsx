@@ -1,8 +1,28 @@
-function NoPage(): JSX.Element {
+import {AppRoute, AuthorizationStatus} from '../../const';
+import Header from '../../components/header/header';
+import Footer from '../../components/footer/footer';
+import {Link} from 'react-router-dom';
+
+type NoPageProps = {
+  authorizationStatus: AuthorizationStatus,
+};
+
+function NoPage({authorizationStatus}: NoPageProps): JSX.Element {
   return (
-    <p>
-      404 Not Found
-    </p>
+    <div className="page">
+      <Header authorizationStatus={authorizationStatus}/>
+      <div className="page__main">
+        <div className="container" style={{textAlign: 'center'}}>
+          <p style={{fontSize: '78px'}}>
+            404 Not Found
+          </p>
+          <p>
+            <Link to={AppRoute.Main}>Back to main page</Link>
+          </p>
+        </div>
+      </div>
+      <Footer/>
+    </div>
   );
 }
 
