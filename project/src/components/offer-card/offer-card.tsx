@@ -1,10 +1,10 @@
 import {AppRoute, CONVERT_RATE_TO_PERCENT} from '../../const';
-import {Offer} from '../../types/offer';
+import {ActiveOfferType, Offer} from '../../types/offer';
 import {Link} from 'react-router-dom';
 
 type OfferCardProps = {
   place: Offer,
-  onPlaceChange: (id: number) => void
+  onPlaceChange: (id: ActiveOfferType) => void
 };
 
 function OfferCard({place, onPlaceChange}: OfferCardProps): JSX.Element {
@@ -14,7 +14,7 @@ function OfferCard({place, onPlaceChange}: OfferCardProps): JSX.Element {
   const bookmarkButtonClass = `place-card__bookmark-button button ${isFavorite ? 'place-card__bookmark-button--active' : ''}`;
 
   return (
-    <article className="cities__place-card place-card" onMouseOver={() => onPlaceChange(id)}>
+    <article className="cities__place-card place-card" onMouseEnter={() => onPlaceChange(id)} onMouseLeave={() => onPlaceChange(null)}>
       {
         isPremium
           ?

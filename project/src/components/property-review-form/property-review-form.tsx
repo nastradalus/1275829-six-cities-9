@@ -1,5 +1,5 @@
 import {useState, Fragment} from 'react';
-import {rates} from '../../const';
+import {RATES} from '../../const';
 
 function PropertyReviewForm(): JSX.Element {
   const initState: {
@@ -28,26 +28,27 @@ function PropertyReviewForm(): JSX.Element {
       <label className="reviews__label form__label" htmlFor="review">Your review</label>
       <div className="reviews__rating-form form__rating">
         {
-          rates.map(({id, value, title}, number) =>
-            (
-              <Fragment key={number.toString()}>
-                <input
-                  className="form__rating-input visually-hidden"
-                  name="rating"
-                  value={value}
-                  id={id}
-                  type="radio"
-                  checked={formData.rating === value}
-                  onChange={fieldChangeHandle}
-                />
-                <label htmlFor={id} className="reviews__rating-label form__rating-label" title={title}>
-                  <svg className="form__star-image" width="37" height="33">
-                    <use xlinkHref="#icon-star"/>
-                  </svg>
-                </label>
-              </Fragment>
-            ),
-          )
+          [...RATES.keys()]
+            .map((rate, number) =>
+              (
+                <Fragment key={number.toString()}>
+                  <input
+                    className="form__rating-input visually-hidden"
+                    name="rating"
+                    value={rate}
+                    id={`${rate}-stars`}
+                    type="radio"
+                    checked={formData.rating === rate}
+                    onChange={fieldChangeHandle}
+                  />
+                  <label htmlFor={`${rate}-stars`} className="reviews__rating-label form__rating-label" title={RATES.get(rate)}>
+                    <svg className="form__star-image" width="37" height="33">
+                      <use xlinkHref="#icon-star"/>
+                    </svg>
+                  </label>
+                </Fragment>
+              ),
+            )
         }
       </div>
       <textarea

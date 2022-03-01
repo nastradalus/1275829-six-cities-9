@@ -101,7 +101,11 @@ function Property({authorizationStatus, offers}: PropertyProps): JSX.Element {
                   }
                 </ul>
               </div>
-              <PropertyHost/>
+              {
+                offer?.host
+                  ? <PropertyHost host={offer?.host}/>
+                  : null
+              }
               <PropertyReviews authorizationStatus={authorizationStatus}/>
             </div>
           </div>

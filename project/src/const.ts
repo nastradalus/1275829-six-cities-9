@@ -13,31 +13,10 @@ export enum AuthorizationStatus {
 
 export const CONVERT_RATE_TO_PERCENT = 20;
 
-
-export const rates = [
-  {
-    id: '5-stars',
-    value: '5',
-    title: 'perfect',
-  },
-  {
-    id: '4-stars',
-    value: '4',
-    title: 'good',
-  },
-  {
-    id: '3-stars',
-    value: '3',
-    title: 'not bad',
-  },
-  {
-    id: '2-stars',
-    value: '2',
-    title: 'badly',
-  },
-  {
-    id: '1-stars',
-    value: '1',
-    title: 'terribly',
-  },
-];
+export const RATES = new Map([
+  ['5', 'perfect'],
+  ['4', 'good'],
+  ['3', 'not bad'],
+  ['2', 'badly'],
+  ['1', 'terribly'],
+]);
