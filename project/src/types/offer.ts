@@ -15,11 +15,14 @@ export type Review = {
 
 export type ActiveOfferType = number | null;
 
+export type Coords = [number, number];
+
 export type Offer = {
   id: number,
   name: string,
   type: string,
   city: string,
+  coords: Coords
   bedNumber: number,
   maxAdults: number,
   isPremium: boolean,

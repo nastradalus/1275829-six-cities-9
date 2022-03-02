@@ -4,17 +4,17 @@ import {Link} from 'react-router-dom';
 
 type OfferCardProps = {
   place: Offer,
-  onPlaceChange: (id: ActiveOfferType) => void
+  onPlaceHover: (id: ActiveOfferType) => void
 };
 
-function OfferCard({place, onPlaceChange}: OfferCardProps): JSX.Element {
+function OfferCard({place, onPlaceHover}: OfferCardProps): JSX.Element {
   const {id, name, type, isPremium, isFavorite, rate, images, price} = place;
   const image = images ? images[0] : null;
   const percent = `${rate * CONVERT_RATE_TO_PERCENT}%`;
   const bookmarkButtonClass = `place-card__bookmark-button button ${isFavorite ? 'place-card__bookmark-button--active' : ''}`;
 
   return (
-    <article className="cities__place-card place-card" onMouseEnter={() => onPlaceChange(id)} onMouseLeave={() => onPlaceChange(null)}>
+    <article className="cities__place-card place-card" onMouseEnter={() => onPlaceHover(id)} onMouseLeave={() => onPlaceHover(null)}>
       {
         isPremium
           ?
