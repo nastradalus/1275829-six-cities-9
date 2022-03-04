@@ -2,8 +2,8 @@ import Header from '../../components/header/header';
 import PropertyHost from '../../components/property-host/property-host';
 import PropertyReviews from '../../components/property-reviews/property-reviews';
 import PropertyNearPlaces from '../../components/property-near-places/property-near-places';
-import {AuthorizationStatus, CONVERT_RATE_TO_PERCENT} from '../../const';
-import {useParams} from 'react-router-dom';
+import {AppRoute, AuthorizationStatus, CONVERT_RATE_TO_PERCENT} from '../../const';
+import {Navigate, useParams} from 'react-router-dom';
 import {ActiveOfferType, Offer} from '../../types/offer';
 import Map from '../../components/map/map';
 import {City} from '../../types/city';
@@ -27,7 +27,7 @@ const getOffer = (offers: Offer[], id: number): Offer => {
 };
 
 const getCityByName = (name: string): City =>  {
-  for (let city of cities) {
+  for (const city of cities) {
     if (city.title === name) {
       return city;
     }
@@ -137,7 +137,7 @@ function Property({authorizationStatus, offers}: PropertyProps): JSX.Element {
         </main>
       </div>
     )
-    : (<></>);
+    : <Navigate to={AppRoute.Main} />;
 }
 
 export default Property;
