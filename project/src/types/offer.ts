@@ -10,7 +10,7 @@ export type Review = {
   avatar: string,
   rate: number,
   review: string,
-  date: string,
+  date: number,
 };
 
 export type ActiveOfferType = number | null;

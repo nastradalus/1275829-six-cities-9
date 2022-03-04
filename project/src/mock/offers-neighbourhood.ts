@@ -1,52 +1,6 @@
 import {Offer} from '../types/offer';
 
-export const offers: Offer[] = [
-  {
-    id: 1,
-    name: 'Beautiful & luxurious studio at great location',
-    type: 'Apartment',
-    city: 'Amsterdam',
-    coords: [52.3909553943508, 4.85309666406198],
-    bedNumber: 3,
-    maxAdults: 4,
-    isPremium: true,
-    isFavorite: true,
-    rate: 4.8,
-    images: [
-      `https://picsum.photos/260/200?r=${Math.floor(Math.random() * (1000 + 1))}`,
-      `https://picsum.photos/260/200?r=${Math.floor(Math.random() * (1000 + 1))}`,
-      `https://picsum.photos/260/200?r=${Math.floor(Math.random() * (1000 + 1))}`,
-      `https://picsum.photos/260/200?r=${Math.floor(Math.random() * (1000 + 1))}`,
-      `https://picsum.photos/260/200?r=${Math.floor(Math.random() * (1000 + 1))}`,
-      `https://picsum.photos/260/200?r=${Math.floor(Math.random() * (1000 + 1))}`,
-    ],
-    price: 120,
-    includes: [
-      'Wi-Fi', 'Washing machine', 'Towels', 'Heating',
-    ],
-    host: {
-      name: 'Angelina',
-      avatar: `http://placekitten.com/74/74?r=${Math.floor(Math.random() * (1000 + 1))}`,
-      rang: 'Pro',
-      offerDescription: 'A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam. The building is green and from 18th century.',
-    },
-    reviews: [
-      {
-        name: 'Max',
-        avatar: `http://placekitten.com/54/54?r=${Math.floor(Math.random() * (1000 + 1))}`,
-        rate: 4,
-        review: 'A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam. The building is green and from 18th century.',
-        date: 1556139600000,
-      },
-      {
-        name: 'Anton',
-        avatar: `http://placekitten.com/54/54?r=${Math.floor(Math.random() * (1000 + 1))}`,
-        rate: 1,
-        review: 'A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam. The building is green and from 18th century.',
-        date: 1558731600000,
-      },
-    ],
-  },
+export const offersNeighbourhood: Offer[] = [
   {
     id: 2,
     name: 'Wood and stone place',
@@ -133,45 +87,6 @@ export const offers: Offer[] = [
     coords: [52.3809553943508, 4.939309666406198],
     bedNumber: 4,
     maxAdults: 4,
-    isPremium: false,
-    isFavorite: false,
-    rate: 3,
-    images: [
-      `https://picsum.photos/260/200?r=${Math.floor(Math.random() * (1000 + 1))}`,
-      `https://picsum.photos/260/200?r=${Math.floor(Math.random() * (1000 + 1))}`,
-      `https://picsum.photos/260/200?r=${Math.floor(Math.random() * (1000 + 1))}`,
-      `https://picsum.photos/260/200?r=${Math.floor(Math.random() * (1000 + 1))}`,
-      `https://picsum.photos/260/200?r=${Math.floor(Math.random() * (1000 + 1))}`,
-      `https://picsum.photos/260/200?r=${Math.floor(Math.random() * (1000 + 1))}`,
-    ],
-    price: 215,
-    includes: [
-      'Wi-Fi', 'Washing machine', 'Towels', 'Heating',
-    ],
-    host: {
-      name: 'Angelina',
-      avatar: `http://placekitten.com/74/74?r=${Math.floor(Math.random() * (1000 + 1))}`,
-      rang: 'Pro',
-      offerDescription: 'A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam. The building is green and from 18th century.',
-    },
-    reviews: [
-      {
-        name: 'Max',
-        avatar: `http://placekitten.com/54/54?r=${Math.floor(Math.random() * (1000 + 1))}`,
-        rate: 2,
-        review: 'A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam. The building is green and from 18th century.',
-        date: 1556139600000,
-      },
-    ],
-  },
-  {
-    id: 5,
-    name: 'Peacefully place',
-    type: 'Apartment',
-    city: 'Hamburg',
-    coords: [53.547673, 9.978456],
-    bedNumber: 1,
-    maxAdults: 1,
     isPremium: false,
     isFavorite: false,
     rate: 3,

@@ -1,20 +1,31 @@
-import {AppRoute, CONVERT_RATE_TO_PERCENT} from '../../const';
+import {AppRoute, CONVERT_RATE_TO_PERCENT, OfferCardType} from '../../const';
 import {ActiveOfferType, Offer} from '../../types/offer';
 import {Link} from 'react-router-dom';
 
 type OfferCardProps = {
   place: Offer,
-  onPlaceHover: (id: ActiveOfferType) => void
+  onPlaceHover: (id: ActiveOfferType) => void,
+  offerCardType: string,
 };
 
-function OfferCard({place, onPlaceHover}: OfferCardProps): JSX.Element {
+function OfferCard({place, onPlaceHover, offerCardType}: OfferCardProps): JSX.Element {
   const {id, name, type, isPremium, isFavorite, rate, images, price} = place;
   const image = images ? images[0] : null;
   const percent = `${rate * CONVERT_RATE_TO_PERCENT}%`;
   const bookmarkButtonClass = `place-card__bookmark-button button ${isFavorite ? 'place-card__bookmark-button--active' : ''}`;
 
+  const articleClass =
+    offerCardType === OfferCardType.NearPlaces
+      ? 'near-places__card'
+      : 'cities__place-card';
+
+  const imageWrapperClass =
+    offerCardType === OfferCardType.NearPlaces
+      ? 'near-places__image-wrapper'
+      : 'cities__place-card';
+
   return (
-    <article className="cities__place-card place-card" onMouseEnter={() => onPlaceHover(id)} onMouseLeave={() => onPlaceHover(null)}>
+    <article className={`${articleClass} place-card`} onMouseEnter={() => onPlaceHover(id)} onMouseLeave={() => onPlaceHover(null)}>
       {
         isPremium
           ?
@@ -26,7 +37,7 @@ function OfferCard({place, onPlaceHover}: OfferCardProps): JSX.Element {
       {
         images
           ?
-          <div className="cities__image-wrapper place-card__image-wrapper">
+          <div className={`${imageWrapperClass} place-card__image-wrapper`}>
             {
               image
                 ?

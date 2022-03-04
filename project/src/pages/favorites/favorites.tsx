@@ -8,11 +8,11 @@ const sortOffersByCity = (offers: Offer[]): OffersByCity => {
   const offersByCity: OffersByCity = {};
 
   offers.forEach((offer) => {
-    if (typeof offersByCity[offer.city] === 'undefined') {
-      offersByCity[offer.city] = [];
-    }
-
     if (offer.isFavorite) {
+      if (typeof offersByCity[offer.city] === 'undefined') {
+        offersByCity[offer.city] = [];
+      }
+
       offersByCity[offer.city].push(offer);
     }
   });

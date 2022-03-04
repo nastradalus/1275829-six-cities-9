@@ -5,6 +5,7 @@ import {useState} from 'react';
 import {ActiveOfferType} from '../../types/offer';
 import Map from '../map/map';
 import {City} from '../../types/city';
+import {OfferCardType} from '../../const';
 
 type OfferAndMapProps = {
   activeCity: City,
@@ -26,7 +27,14 @@ function OfferAndMap({activeCity, offers}: OfferAndMapProps): JSX.Element {
               <SortForm/>
               <div className="cities__places-list places__list tabs__content">
                 {
-                  offers.map((offer) => <OfferCard key={offer.id} place={offer} onPlaceHover={setActivePlace}/>)
+                  offers.map((offer) => (
+                    <OfferCard
+                      key={offer.id}
+                      place={offer}
+                      onPlaceHover={setActivePlace}
+                      offerCardType={OfferCardType.Cities}
+                    />),
+                  )
                 }
               </div>
             </section>

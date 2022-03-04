@@ -1,10 +1,9 @@
-import leaflet from 'leaflet';
+import leaflet, {Layer} from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import {useEffect, useRef} from 'react';
 import useMap from '../../hooks/use-map';
 import {City} from '../../types/city';
 import {ActiveOfferType, Offer} from '../../types/offer';
-import {ref} from '../../types/ref';
 
 type MapProps = {
   city: City,
@@ -13,8 +12,9 @@ type MapProps = {
 };
 
 function Map({city, places, selectedPlace}: MapProps): JSX.Element {
-  const mapRef: ref = useRef(null);
+  const mapRef = useRef(null);
   const map = useMap(mapRef, city);
+  const markers: Layer[] = [];
 
   const defaultCustomIcon = leaflet.icon({
     iconUrl: './img/pin.svg',
@@ -30,8 +30,8 @@ function Map({city, places, selectedPlace}: MapProps): JSX.Element {
 
   useEffect(() => {
     if (map) {
-      places.forEach((point) => {
-        leaflet
+      places.forEach((point, number) => {
+        markers[number] = leaflet
           .marker({
             lat: point.coords[0],
             lng: point.coords[1],
@@ -43,7 +43,15 @@ function Map({city, places, selectedPlace}: MapProps): JSX.Element {
           .addTo(map);
       });
     }
-  }, [map, places, selectedPlace, city.title]);
+
+    return () => {
+      markers.forEach((marker) => {
+        if (map) {
+          map.removeLayer(marker);
+        }
+      });
+    };
+  }, [map, places, selectedPlace, city]);
 
   return (
     <div

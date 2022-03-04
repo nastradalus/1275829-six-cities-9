@@ -1,10 +1,9 @@
-import {useEffect, useState} from 'react';
+import {RefObject, useEffect, useState} from 'react';
 import leaflet from 'leaflet';
 import {City} from '../types/city';
-import {ref} from '../types/ref';
 
-function useMap(mapRef: ref, city: City) {
-  const [map, setMap] = useState<any>(null);
+function useMap(mapRef: RefObject<HTMLElement>, city: City) {
+  const [map, setMap] = useState<leaflet.Map | null>(null);
 
   useEffect(() => {
     if (mapRef.current !== null) {
