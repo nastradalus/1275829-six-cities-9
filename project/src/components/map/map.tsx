@@ -1,20 +1,18 @@
-import leaflet, {Layer} from 'leaflet';
+import leaflet from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import {useEffect, useRef} from 'react';
 import useMap from '../../hooks/use-map';
-import {City} from '../../types/city';
-import {ActiveOfferType, Offer} from '../../types/offer';
+import {ActiveOfferType} from '../../types/offer';
+import {useAppSelector} from '../../hooks';
 
 type MapProps = {
-  city: City,
-  places: Offer[],
   selectedPlace: ActiveOfferType,
 };
 
-function Map({city, places, selectedPlace}: MapProps): JSX.Element {
+function Map({selectedPlace}: MapProps): JSX.Element {
+  const {city, cityOffers} = useAppSelector(((state) => state));
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
-  const markers: Layer[] = [];
 
   const defaultCustomIcon = leaflet.icon({
     iconUrl: './img/pin.svg',
@@ -30,8 +28,8 @@ function Map({city, places, selectedPlace}: MapProps): JSX.Element {
 
   useEffect(() => {
     if (map) {
-      places.forEach((point, number) => {
-        markers[number] = leaflet
+      const markers = cityOffers.map((point, number) =>
+        leaflet
           .marker({
             lat: point.coords[0],
             lng: point.coords[1],
@@ -40,18 +38,17 @@ function Map({city, places, selectedPlace}: MapProps): JSX.Element {
               ? currentCustomIcon
               : defaultCustomIcon,
           })
-          .addTo(map);
-      });
-    }
+          .addTo(map));
 
-    return () => {
-      markers.forEach((marker) => {
-        if (map) {
-          map.removeLayer(marker);
-        }
-      });
-    };
-  }, [map, places, selectedPlace, city]);
+      return () => {
+        markers.forEach((marker) => {
+          if (map) {
+            map.removeLayer(marker);
+          }
+        });
+      };
+    }
+  }, [map, cityOffers, selectedPlace, city]);
 
   return (
     <div

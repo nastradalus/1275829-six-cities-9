@@ -6,8 +6,6 @@ import {AppRoute, AuthorizationStatus, CONVERT_RATE_TO_PERCENT} from '../../cons
 import {Navigate, useParams} from 'react-router-dom';
 import {ActiveOfferType, Offer} from '../../types/offer';
 import Map from '../../components/map/map';
-import {City} from '../../types/city';
-import {cities} from '../../mock/cities';
 import {offersNeighbourhood} from '../../mock/offers-neighbourhood';
 import {useState} from 'react';
 
@@ -24,16 +22,6 @@ const getOffer = (offers: Offer[], id: number): Offer => {
   }
 
   throw new Error('Can\'t find offer.');
-};
-
-const getCityByName = (name: string): City =>  {
-  for (const city of cities) {
-    if (city.title === name) {
-      return city;
-    }
-  }
-
-  throw new Error('Can\'t define city.');
 };
 
 function Property({authorizationStatus, offers}: PropertyProps): JSX.Element {
@@ -128,7 +116,7 @@ function Property({authorizationStatus, offers}: PropertyProps): JSX.Element {
               </div>
             </div>
             <section className="property__map map">
-              <Map city={getCityByName(offer.city)} places={offersNeighbourhood} selectedPlace={activePlace}/>
+              <Map selectedPlace={activePlace}/>
             </section>
           </section>
           <div className="container">

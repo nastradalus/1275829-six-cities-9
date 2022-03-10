@@ -1,33 +1,28 @@
 import SortForm from '../sort-form/sort-form';
-import {Offer} from '../../types/offer';
 import OfferCard from '../offer-card/offer-card';
 import {useState} from 'react';
 import {ActiveOfferType} from '../../types/offer';
 import Map from '../map/map';
-import {City} from '../../types/city';
 import {OfferCardType} from '../../const';
+import {useAppSelector} from '../../hooks';
 
-type OfferAndMapProps = {
-  activeCity: City,
-  offers: Offer[]
-};
-
-function OfferAndMap({activeCity, offers}: OfferAndMapProps): JSX.Element {
+function OfferAndMap(): JSX.Element {
   const [activePlace, setActivePlace] = useState<ActiveOfferType>(null);
+  const {city: activeCity, cityOffers} = useAppSelector(((state) => state));
 
   return (
     <div className="cities">
       {
-        offers.length
+        cityOffers.length
           ?
           <div className="cities__places-container container">
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">{offers.length} places to stay in {activeCity.title}</b>
+              <b className="places__found">{cityOffers.length} places to stay in {activeCity.title}</b>
               <SortForm/>
               <div className="cities__places-list places__list tabs__content">
                 {
-                  offers.map((offer) => (
+                  cityOffers.map((offer) => (
                     <OfferCard
                       key={offer.id}
                       place={offer}
@@ -40,7 +35,7 @@ function OfferAndMap({activeCity, offers}: OfferAndMapProps): JSX.Element {
             </section>
             <div className="cities__right-section">
               <section data-current={activeCity.title} className="cities__map map">
-                <Map city={activeCity} places={offers} selectedPlace={activePlace}/>
+                <Map selectedPlace={activePlace}/>
               </section>
             </div>
           </div>

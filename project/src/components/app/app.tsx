@@ -19,7 +19,7 @@ function App({authorizationStatus, offers}: AppProps): JSX.Element {
     <BrowserRouter>
       <Routes>
         <Route path={AppRoute.Main} element={
-          <Main authorizationStatus={authorizationStatus} offers={offers}/>
+          <Main authorizationStatus={authorizationStatus}/>
         }
         />
         <Route path={AppRoute.SignIn} element={
