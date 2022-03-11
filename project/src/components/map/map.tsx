@@ -2,7 +2,7 @@ import leaflet from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import {useEffect, useRef} from 'react';
 import useMap from '../../hooks/use-map';
-import {ActiveOfferType, Offer} from '../../types/offer';
+import {Offer} from '../../types/offer';
 import {useAppSelector} from '../../hooks';
 
 type MapProps = {

@@ -2,12 +2,11 @@ import Header from '../../components/header/header';
 import PropertyHost from '../../components/property-host/property-host';
 import PropertyReviews from '../../components/property-reviews/property-reviews';
 import PropertyNearPlaces from '../../components/property-near-places/property-near-places';
-import {AppRoute, AuthorizationStatus, CONVERT_RATE_TO_PERCENT, DEFAULT_POINT_ID} from '../../const';
+import {AppRoute, AuthorizationStatus, CONVERT_RATE_TO_PERCENT} from '../../const';
 import {Navigate, useParams} from 'react-router-dom';
-import {ActiveOfferType, Offer} from '../../types/offer';
+import {Offer} from '../../types/offer';
 import Map from '../../components/map/map';
 import {offersNeighbourhood} from '../../mock/offers-neighbourhood';
-import {useState} from 'react';
 
 type PropertyProps = {
   authorizationStatus: AuthorizationStatus

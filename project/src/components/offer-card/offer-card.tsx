@@ -1,7 +1,7 @@
 import {AppRoute, CONVERT_RATE_TO_PERCENT, DEFAULT_POINT_ID, OfferCardType} from '../../const';
-import {ActiveOfferType, Offer} from '../../types/offer';
+import {Offer} from '../../types/offer';
 import {Link} from 'react-router-dom';
-import {useAppDispatch, useAppSelector} from '../../hooks';
+import {useAppDispatch} from '../../hooks';
 import {changePoint} from '../../store/action';
 
 type OfferCardProps = {
@@ -10,7 +10,6 @@ type OfferCardProps = {
 };
 
 function OfferCard({place, offerCardType}: OfferCardProps): JSX.Element {
-  const {point} = useAppSelector((state) => state);
   const dispatch = useAppDispatch();
   const {id, name, type, isPremium, isFavorite, rate, images, price} = place;
   const image = images ? images[0] : null;

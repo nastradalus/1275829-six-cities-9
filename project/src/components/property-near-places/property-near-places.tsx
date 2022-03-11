@@ -1,6 +1,6 @@
 import OfferCard from '../offer-card/offer-card';
 import {OfferCardType} from '../../const';
-import {ActiveOfferType, Offer} from '../../types/offer';
+import {Offer} from '../../types/offer';
 
 type PropertyNearPlacesProps = {
   offers: Offer[]
