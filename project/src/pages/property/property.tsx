@@ -26,7 +26,6 @@ const getOffer = (offers: Offer[], id: number): Offer => {
 
 function Property({authorizationStatus, offers}: PropertyProps): JSX.Element {
   const params = useParams();
-  const [setActivePlace] = useState<ActiveOfferType>(DEFAULT_POINT_ID);
   const offer = typeof params.id !== 'undefined' ? getOffer(offers, +params?.id) : null;
 
   const bookmarkButtonClass = `property__bookmark-button button ${offer?.isFavorite ? 'property__bookmark-button--active' : ''}`;
