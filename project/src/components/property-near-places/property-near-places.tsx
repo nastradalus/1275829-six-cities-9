@@ -3,11 +3,10 @@ import {OfferCardType} from '../../const';
 import {ActiveOfferType, Offer} from '../../types/offer';
 
 type PropertyNearPlacesProps = {
-  offers: Offer[],
-  onPlaceHover: (id: ActiveOfferType) => void,
+  offers: Offer[]
 };
 
-function PropertyNearPlaces({offers, onPlaceHover}: PropertyNearPlacesProps): JSX.Element {
+function PropertyNearPlaces({offers}: PropertyNearPlacesProps): JSX.Element {
   return (
     <section className="near-places places">
       <h2 className="near-places__title">Other places in the neighbourhood</h2>
@@ -17,7 +16,6 @@ function PropertyNearPlaces({offers, onPlaceHover}: PropertyNearPlacesProps): JS
             <OfferCard
               key={offer.id}
               place={offer}
-              onPlaceHover={onPlaceHover}
               offerCardType={OfferCardType.NearPlaces}
             />
           ))

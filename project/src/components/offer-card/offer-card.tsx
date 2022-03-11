@@ -1,14 +1,17 @@
-import {AppRoute, CONVERT_RATE_TO_PERCENT, OfferCardType} from '../../const';
+import {AppRoute, CONVERT_RATE_TO_PERCENT, DEFAULT_POINT_ID, OfferCardType} from '../../const';
 import {ActiveOfferType, Offer} from '../../types/offer';
 import {Link} from 'react-router-dom';
+import {useAppDispatch, useAppSelector} from '../../hooks';
+import {changePoint} from '../../store/action';
 
 type OfferCardProps = {
   place: Offer,
-  onPlaceHover: (id: ActiveOfferType) => void,
   offerCardType: string,
 };
 
-function OfferCard({place, onPlaceHover, offerCardType}: OfferCardProps): JSX.Element {
+function OfferCard({place, offerCardType}: OfferCardProps): JSX.Element {
+  const {point} = useAppSelector((state) => state);
+  const dispatch = useAppDispatch();
   const {id, name, type, isPremium, isFavorite, rate, images, price} = place;
   const image = images ? images[0] : null;
   const percent = `${rate * CONVERT_RATE_TO_PERCENT}%`;
@@ -25,7 +28,11 @@ function OfferCard({place, onPlaceHover, offerCardType}: OfferCardProps): JSX.El
       : 'cities__place-card';
 
   return (
-    <article className={`${articleClass} place-card`} onMouseEnter={() => onPlaceHover(id)} onMouseLeave={() => onPlaceHover(null)}>
+    <article
+      className={`${articleClass} place-card`}
+      onMouseEnter={() => dispatch(changePoint(id))}
+      onMouseLeave={() => dispatch(changePoint(DEFAULT_POINT_ID))}
+    >
       {
         isPremium
           ?

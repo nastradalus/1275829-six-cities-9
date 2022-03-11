@@ -2,15 +2,15 @@ import leaflet from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import {useEffect, useRef} from 'react';
 import useMap from '../../hooks/use-map';
-import {ActiveOfferType} from '../../types/offer';
+import {ActiveOfferType, Offer} from '../../types/offer';
 import {useAppSelector} from '../../hooks';
 
 type MapProps = {
-  selectedPlace: ActiveOfferType,
+  offers: Offer[]
 };
 
-function Map({selectedPlace}: MapProps): JSX.Element {
-  const {city, cityOffers} = useAppSelector(((state) => state));
+function Map({offers}: MapProps): JSX.Element {
+  const {city, point: selectedPlace} = useAppSelector(((state) => state));
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
 
@@ -28,7 +28,7 @@ function Map({selectedPlace}: MapProps): JSX.Element {
 
   useEffect(() => {
     if (map) {
-      const markers = cityOffers.map((point, number) =>
+      const markers = offers.map((point, number) =>
         leaflet
           .marker({
             lat: point.coords[0],
@@ -48,7 +48,7 @@ function Map({selectedPlace}: MapProps): JSX.Element {
         });
       };
     }
-  }, [map, cityOffers, selectedPlace, city]);
+  }, [map, offers, selectedPlace, city]);
 
   return (
     <div

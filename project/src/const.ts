@@ -21,6 +21,15 @@ export enum DateFormat {
   StringDate = 'Month Year',
 }
 
+export enum SortType {
+  Popular = 'Popular',
+  PriceAsc = 'Price: low to high',
+  PriceDesc = 'Price: high to low',
+  TopRated = 'Top rated first',
+}
+
+export const DEFAULT_POINT_ID = -1;
+
 export const CONVERT_RATE_TO_PERCENT = 20;
 
 export const RATES = new Map([

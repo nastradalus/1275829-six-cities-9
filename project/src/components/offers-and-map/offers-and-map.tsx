@@ -1,14 +1,11 @@
 import SortForm from '../sort-form/sort-form';
 import OfferCard from '../offer-card/offer-card';
-import {useState} from 'react';
-import {ActiveOfferType} from '../../types/offer';
 import Map from '../map/map';
 import {OfferCardType} from '../../const';
 import {useAppSelector} from '../../hooks';
 
 function OfferAndMap(): JSX.Element {
-  const [activePlace, setActivePlace] = useState<ActiveOfferType>(null);
-  const {city: activeCity, cityOffers} = useAppSelector(((state) => state));
+  const {city: activeCity, cityOffers, sortedOffers} = useAppSelector(((state) => state));
 
   return (
     <div className="cities">
@@ -22,11 +19,10 @@ function OfferAndMap(): JSX.Element {
               <SortForm/>
               <div className="cities__places-list places__list tabs__content">
                 {
-                  cityOffers.map((offer) => (
+                  sortedOffers.map((offer) => (
                     <OfferCard
                       key={offer.id}
                       place={offer}
-                      onPlaceHover={setActivePlace}
                       offerCardType={OfferCardType.Cities}
                     />),
                   )
@@ -35,7 +31,7 @@ function OfferAndMap(): JSX.Element {
             </section>
             <div className="cities__right-section">
               <section data-current={activeCity.title} className="cities__map map">
-                <Map selectedPlace={activePlace}/>
+                <Map offers={cityOffers}/>
               </section>
             </div>
           </div>

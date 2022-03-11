@@ -13,7 +13,7 @@ export type Review = {
   date: number,
 };
 
-export type ActiveOfferType = number | null;
+export type ActiveOfferType = number;
 
 export type Coords = [number, number];
 

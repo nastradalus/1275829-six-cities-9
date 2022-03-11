@@ -2,7 +2,7 @@ import Header from '../../components/header/header';
 import PropertyHost from '../../components/property-host/property-host';
 import PropertyReviews from '../../components/property-reviews/property-reviews';
 import PropertyNearPlaces from '../../components/property-near-places/property-near-places';
-import {AppRoute, AuthorizationStatus, CONVERT_RATE_TO_PERCENT} from '../../const';
+import {AppRoute, AuthorizationStatus, CONVERT_RATE_TO_PERCENT, DEFAULT_POINT_ID} from '../../const';
 import {Navigate, useParams} from 'react-router-dom';
 import {ActiveOfferType, Offer} from '../../types/offer';
 import Map from '../../components/map/map';
@@ -26,7 +26,7 @@ const getOffer = (offers: Offer[], id: number): Offer => {
 
 function Property({authorizationStatus, offers}: PropertyProps): JSX.Element {
   const params = useParams();
-  const [activePlace, setActivePlace] = useState<ActiveOfferType>(null);
+  const [setActivePlace] = useState<ActiveOfferType>(DEFAULT_POINT_ID);
   const offer = typeof params.id !== 'undefined' ? getOffer(offers, +params?.id) : null;
 
   const bookmarkButtonClass = `property__bookmark-button button ${offer?.isFavorite ? 'property__bookmark-button--active' : ''}`;
@@ -116,16 +116,16 @@ function Property({authorizationStatus, offers}: PropertyProps): JSX.Element {
               </div>
             </div>
             <section className="property__map map">
-              <Map selectedPlace={activePlace}/>
+              <Map offers={offersNeighbourhood}/>
             </section>
           </section>
           <div className="container">
-            <PropertyNearPlaces offers={offersNeighbourhood} onPlaceHover={setActivePlace}/>
+            <PropertyNearPlaces offers={offersNeighbourhood}/>
           </div>
         </main>
       </div>
     )
-    : <Navigate to={AppRoute.Main} />;
+    : <Navigate to={AppRoute.Main}/>;
 }
 
 export default Property;
