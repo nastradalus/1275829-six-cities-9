@@ -1,4 +1,4 @@
-import {Offer} from '../../types/offer';
+import {Offer} from '../../types/types';
 import {AppRoute, CONVERT_RATE_TO_PERCENT} from '../../const';
 import {Link} from 'react-router-dom';
 
@@ -7,8 +7,8 @@ type FavoriteCardProps = {
 };
 
 function FavoriteCard({offer}: FavoriteCardProps): JSX.Element {
-  const {isPremium, type, images, price, rate, name, id} = offer;
-  const percent = `${rate * CONVERT_RATE_TO_PERCENT}%`;
+  const {isPremium, type, images, price, rating, title, id} = offer;
+  const percent = `${rating * CONVERT_RATE_TO_PERCENT}%`;
 
   return (
     <article className="favorites__card place-card">
@@ -21,9 +21,9 @@ function FavoriteCard({offer}: FavoriteCardProps): JSX.Element {
           : null
       }
       <div className="favorites__image-wrapper place-card__image-wrapper">
-        <a href="#">
+        <Link to={`${AppRoute.Room}/${id}`}>
           <img className="place-card__image" src={images[0]} width="150" height="110" alt="Place image"/>
-        </a>
+        </Link>
       </div>
       <div className="favorites__card-info place-card__info">
         <div className="place-card__price-wrapper">
@@ -45,7 +45,7 @@ function FavoriteCard({offer}: FavoriteCardProps): JSX.Element {
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={`${AppRoute.Room}/${id}`}>{name}</Link>
+          <Link to={`${AppRoute.Room}/${id}`}>{title}</Link>
         </h2>
         <p className="place-card__type">{type}</p>
       </div>

@@ -1,12 +1,17 @@
 import {AppRoute, AuthorizationStatus} from '../../const';
 import {Link} from 'react-router-dom';
+import {useAppDispatch, useAppSelector} from '../../hooks';
+import {logoutAction} from '../../store/api-actions';
 
 type HeaderProps = {
-  authorizationStatus: AuthorizationStatus,
   isLoginPage?: boolean
 };
 
-function Header({authorizationStatus, isLoginPage = false}: HeaderProps): JSX.Element {
+function Header({isLoginPage = false}: HeaderProps): JSX.Element {
+  const profile = useAppSelector((state) => state.profile);
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const dispatch = useAppDispatch();
+
   return (
     <header className="header">
       <div className="container">
@@ -23,12 +28,24 @@ function Header({authorizationStatus, isLoginPage = false}: HeaderProps): JSX.El
                 <ul className="header__nav-list">
                   <li className="header__nav-item user">
                     <Link className="header__nav-link header__nav-link--profile" to={AppRoute.Favorites}>
-                      <div className="header__avatar-wrapper user__avatar-wrapper">
-                      </div>
                       {
                         authorizationStatus === AuthorizationStatus.Auth
-                          ? <span className="header__user-name user__name">Oliver.conner@gmail.com</span>
-                          : <span className="header__login">Sign in</span>
+                          ?
+                          <>
+                            <div
+                              className="header__avatar-wrapper user__avatar-wrapper"
+                              style={{
+                                backgroundImage: `url(${profile?.avatarUrl})`,
+                                borderRadius: '100%',
+                              }}
+                            />
+                            <span className="header__user-name user__name">{profile?.email}</span>
+                          </>
+                          :
+                          <>
+                            <div className="header__avatar-wrapper user__avatar-wrapper"/>
+                            <span className="header__login">Sign in</span>
+                          </>
                       }
                     </Link>
                   </li>
@@ -37,7 +54,15 @@ function Header({authorizationStatus, isLoginPage = false}: HeaderProps): JSX.El
                       ?
                       <li className="header__nav-item">
                         <a className="header__nav-link" href="#">
-                          <span className="header__signout">Sign out</span>
+                          <span
+                            className="header__signout"
+                            onClick={(evt) => {
+                              evt.preventDefault();
+                              dispatch(logoutAction());
+                            }}
+                          >
+                            Sign out
+                          </span>
                         </a>
                       </li>
                       : null

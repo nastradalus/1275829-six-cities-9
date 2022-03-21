@@ -1,19 +1,37 @@
-import {useState, Fragment} from 'react';
-import {RATES} from '../../const';
+import {useState, Fragment, FormEvent, ChangeEvent} from 'react';
+import {DEFAULT_POINT_ID, RATES} from '../../const';
+import {addReviewAction} from '../../store/api-actions';
+import {useAppDispatch} from '../../hooks';
+import {useParams} from 'react-router-dom';
+import {FormReview} from '../../types/types';
+
+const initState: FormReview = {
+  rating: 0,
+  comment: '',
+};
 
 function PropertyReviewForm(): JSX.Element {
-  const initState: {
-    rating: string | null,
-    review: any,
-  } = {
-    rating: null,
-    review: '',
-  };
   const [formData, setFormData] = useState(initState);
+  const dispatch = useAppDispatch();
+  const params = useParams();
 
-  const fieldChangeHandle = (evt: any) => {
+  const fieldChangeHandle = (evt: ChangeEvent<HTMLInputElement & HTMLTextAreaElement>) => {
     const {name, value} = evt.target;
     setFormData({...formData, [name]: value});
+  };
+
+  const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+
+    if (formData.rating !== 0 && formData.comment !== '') {
+      dispatch(addReviewAction(
+        {
+          ...formData,
+          offerId: params.id ? +params.id : DEFAULT_POINT_ID,
+        },
+      ));
+      setFormData(initState);
+    }
   };
 
   return (
@@ -21,9 +39,7 @@ function PropertyReviewForm(): JSX.Element {
       className="reviews__form form"
       action="#"
       method="post"
-      onSubmit={(evt) => {
-        evt.preventDefault();
-      }}
+      onSubmit={handleSubmit}
     >
       <label className="reviews__label form__label" htmlFor="review">Your review</label>
       <div className="reviews__rating-form form__rating">
@@ -38,7 +54,7 @@ function PropertyReviewForm(): JSX.Element {
                     value={rate}
                     id={`${rate}-stars`}
                     type="radio"
-                    checked={formData.rating === rate}
+                    checked={formData.rating.toString() === rate}
                     onChange={fieldChangeHandle}
                   />
                   <label htmlFor={`${rate}-stars`} className="reviews__rating-label form__rating-label" title={RATES.get(rate)}>
@@ -53,10 +69,10 @@ function PropertyReviewForm(): JSX.Element {
       </div>
       <textarea
         className="reviews__textarea form__textarea"
-        id="review"
-        name="review"
+        id="comment"
+        name="comment"
         placeholder="Tell how was your stay, what you like and what can be improved"
-        value={formData.review}
+        value={formData.comment}
         onChange={fieldChangeHandle}
       />
       <div className="reviews__button-wrapper">
@@ -67,7 +83,7 @@ function PropertyReviewForm(): JSX.Element {
         <button
           className="reviews__submit form__submit button"
           type="submit"
-          disabled={!formData.rating || !formData.review}
+          disabled={!formData.rating || !formData.comment}
         >
           Submit
         </button>

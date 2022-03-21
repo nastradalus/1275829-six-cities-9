@@ -1,16 +1,18 @@
 import {Navigate} from 'react-router-dom';
 import {AppRoute, AuthorizationStatus} from '../../const';
+import {useAppSelector} from '../../hooks';
 
 type PrivateRouteProps = {
-  authorizationStatus: AuthorizationStatus;
   children: JSX.Element;
 }
 
-function NoAuthRoute({authorizationStatus, children}: PrivateRouteProps): JSX.Element {
+function NoAuthRoute({children}: PrivateRouteProps): JSX.Element {
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+
   return (
     authorizationStatus === AuthorizationStatus.NoAuth
       ? children
-      : <Navigate to={AppRoute.Favorites}/>
+      : <Navigate to={AppRoute.Main}/>
   );
 }
 

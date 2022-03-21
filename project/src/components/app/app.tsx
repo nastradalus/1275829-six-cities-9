@@ -1,46 +1,59 @@
-import {Route, BrowserRouter, Routes, Navigate} from 'react-router-dom';
+import {Route, Routes, Navigate} from 'react-router-dom';
 import {AppRoute, AuthorizationStatus} from '../../const';
 import Main from '../../pages/main/main';
 import Login from '../../pages/login/login';
 import Favorites from '../../pages/favorites/favorites';
-import Property from '../../pages/property/property';
 import NoPage from '../../pages/no-page/no-page';
 import NoAuthRoute from '../no-auth-route/no-auth-route';
 import AuthRoute from '../auth-route/auth-route';
-import {Offer} from '../../types/offer';
+import {useAppSelector} from '../../hooks';
+import LoadingScreen from '../loading-screen/loading-screen';
+import HistoryRouter from '../history-route/history-route';
+import browserHistory from '../../browser-history';
+import Property from '../../pages/property/property';
 
-type AppProps = {
-  authorizationStatus: AuthorizationStatus,
-  offers: Offer[]
-};
+const isCheckedAuth = (authorizationStatus: AuthorizationStatus): boolean =>
+  authorizationStatus === AuthorizationStatus.Unknown;
 
-function App({authorizationStatus, offers}: AppProps): JSX.Element {
+function App(): JSX.Element {
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const isDataLoaded = useAppSelector((state) => state.isDataLoaded);
+
+  if (isCheckedAuth(authorizationStatus) || !isDataLoaded) {
+    return (
+      <LoadingScreen/>
+    );
+  }
+
   return (
-    <BrowserRouter>
+    <HistoryRouter history={browserHistory}>
       <Routes>
         <Route path={AppRoute.Main} element={
-          <Main authorizationStatus={authorizationStatus}/>
+          <Main/>
         }
         />
         <Route path={AppRoute.SignIn} element={
-          <NoAuthRoute authorizationStatus={authorizationStatus}>
+          <NoAuthRoute>
             <Login/>
           </NoAuthRoute>
         }
         />
         <Route path={AppRoute.Favorites} element={
-          <AuthRoute authorizationStatus={authorizationStatus}>
-            <Favorites offers={offers}/>
+          <AuthRoute>
+            <Favorites/>
           </AuthRoute>
         }
         />
         <Route path={AppRoute.Room}>
-          <Route index element={<Navigate to={AppRoute.Main}/>}/>
-          <Route path={AppRoute.RoomId} element={<Property authorizationStatus={authorizationStatus} offers={offers}/>}/>
+          <Route index element={<Navigate to={AppRoute.NoPage}/>}/>
+          <Route
+            path={AppRoute.RoomId}
+            element={<Property/>}
+          />
         </Route>
-        <Route path="*" element={<NoPage authorizationStatus={authorizationStatus}/>}/>
+        <Route path="*" element={<NoPage/>}/>
       </Routes>
-    </BrowserRouter>
+    </HistoryRouter>
   );
 }
 

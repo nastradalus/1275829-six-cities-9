@@ -1,16 +1,12 @@
-import {AppRoute, AuthorizationStatus} from '../../const';
+import {AppRoute} from '../../const';
 import Header from '../../components/header/header';
 import Footer from '../../components/footer/footer';
 import {Link} from 'react-router-dom';
 
-type NoPageProps = {
-  authorizationStatus: AuthorizationStatus,
-};
-
-function NoPage({authorizationStatus}: NoPageProps): JSX.Element {
+function NoPage(): JSX.Element {
   return (
     <div className="page">
-      <Header authorizationStatus={authorizationStatus}/>
+      <Header/>
       <div className="page__main">
         <div className="container" style={{textAlign: 'center'}}>
           <p style={{fontSize: '78px'}}>

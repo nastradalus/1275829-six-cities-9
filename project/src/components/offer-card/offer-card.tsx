@@ -1,19 +1,17 @@
 import {AppRoute, CONVERT_RATE_TO_PERCENT, DEFAULT_POINT_ID, OfferCardType} from '../../const';
-import {Offer} from '../../types/offer';
+import {ActiveOfferType, Offer} from '../../types/types';
 import {Link} from 'react-router-dom';
-import {useAppDispatch} from '../../hooks';
-import {changePoint} from '../../store/action';
 
 type OfferCardProps = {
   place: Offer,
   offerCardType: string,
+  offerChange: (id: ActiveOfferType) => void,
 };
 
-function OfferCard({place, offerCardType}: OfferCardProps): JSX.Element {
-  const dispatch = useAppDispatch();
-  const {id, name, type, isPremium, isFavorite, rate, images, price} = place;
+function OfferCard({place, offerCardType, offerChange}: OfferCardProps): JSX.Element {
+  const {id, title, type, isPremium, isFavorite, rating, images, price} = place;
   const image = images ? images[0] : null;
-  const percent = `${rate * CONVERT_RATE_TO_PERCENT}%`;
+  const percent = `${rating * CONVERT_RATE_TO_PERCENT}%`;
   const bookmarkButtonClass = `place-card__bookmark-button button ${isFavorite ? 'place-card__bookmark-button--active' : ''}`;
 
   const articleClass =
@@ -29,8 +27,8 @@ function OfferCard({place, offerCardType}: OfferCardProps): JSX.Element {
   return (
     <article
       className={`${articleClass} place-card`}
-      onMouseEnter={() => dispatch(changePoint(id))}
-      onMouseLeave={() => dispatch(changePoint(DEFAULT_POINT_ID))}
+      onMouseEnter={() => offerChange(id)}
+      onMouseLeave={() => offerChange(DEFAULT_POINT_ID)}
     >
       {
         isPremium
@@ -47,9 +45,9 @@ function OfferCard({place, offerCardType}: OfferCardProps): JSX.Element {
             {
               image
                 ?
-                <a href="#">
+                <Link to={`${AppRoute.Room}/${id}`}>
                   <img className="place-card__image" src={image} width="260" height="200" alt="Place image"/>
-                </a>
+                </Link>
                 : null
             }
           </div>
@@ -75,7 +73,7 @@ function OfferCard({place, offerCardType}: OfferCardProps): JSX.Element {
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={`${AppRoute.Room}/${id}`}>{name}</Link>
+          <Link to={`${AppRoute.Room}/${id}`}>{title}</Link>
         </h2>
         <p className="place-card__type">{type}</p>
       </div>

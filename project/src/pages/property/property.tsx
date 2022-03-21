@@ -2,38 +2,43 @@ import Header from '../../components/header/header';
 import PropertyHost from '../../components/property-host/property-host';
 import PropertyReviews from '../../components/property-reviews/property-reviews';
 import PropertyNearPlaces from '../../components/property-near-places/property-near-places';
-import {AppRoute, AuthorizationStatus, CONVERT_RATE_TO_PERCENT} from '../../const';
-import {Navigate, useParams} from 'react-router-dom';
-import {Offer} from '../../types/offer';
+import {CONVERT_RATE_TO_PERCENT, DEFAULT_POINT_ID} from '../../const';
 import Map from '../../components/map/map';
-import {offersNeighbourhood} from '../../mock/offers-neighbourhood';
+import {useAppDispatch, useAppSelector} from '../../hooks';
+import {useState} from 'react';
+import {ActiveOfferType, ParamId} from '../../types/types';
+import {useParams} from 'react-router-dom';
+import {fetchOfferDataAction} from '../../store/api-actions';
+import {loadNearOffers, loadOffer, loadReviews} from '../../store/action';
+import LoadingScreen from '../../components/loading-screen/loading-screen';
 
-type PropertyProps = {
-  authorizationStatus: AuthorizationStatus
-  offers: Offer[]
-};
+function Property(): JSX.Element | null {
+  const [point, setPoint] = useState<ActiveOfferType>(DEFAULT_POINT_ID);
+  const {id: currentOfferId} = useParams<ParamId>();
+  const dispatch = useAppDispatch();
 
-const getOffer = (offers: Offer[], id: number): Offer => {
-  for (const offer of offers) {
-    if (offer.id === id) {
-      return offer;
-    }
+  const offer = useAppSelector((state) => state.currentOffer);
+  const nearOffers = useAppSelector((state) => state.nearOffers);
+  const reviews = useAppSelector((state) => state.reviews);
+  const isOfferDataLoading = useAppSelector((state) => state.isOfferDataLoading);
+
+  const percent = (offer) ? `${offer.rating * CONVERT_RATE_TO_PERCENT}%` : '';
+
+  if (currentOfferId && (!offer || (offer && offer.id !== +currentOfferId)) && !isOfferDataLoading) {
+    dispatch(loadOffer(null));
+    dispatch(loadNearOffers([]));
+    dispatch(loadReviews([]));
+    dispatch(fetchOfferDataAction(+currentOfferId));
   }
 
-  throw new Error('Can\'t find offer.');
-};
-
-function Property({authorizationStatus, offers}: PropertyProps): JSX.Element {
-  const params = useParams();
-  const offer = typeof params.id !== 'undefined' ? getOffer(offers, +params?.id) : null;
-
-  const bookmarkButtonClass = `property__bookmark-button button ${offer?.isFavorite ? 'property__bookmark-button--active' : ''}`;
-  const percent = (offer) ? `${offer.rate * CONVERT_RATE_TO_PERCENT}%` : '';
+  if (isOfferDataLoading) {
+    return (<LoadingScreen/>);
+  }
 
   return offer
     ? (
       <div className="page">
-        <Header authorizationStatus={authorizationStatus}/>
+        <Header/>
 
         <main className="page__main page__main--property">
           <section className="property">
@@ -62,9 +67,9 @@ function Property({authorizationStatus, offers}: PropertyProps): JSX.Element {
                 }
                 <div className="property__name-wrapper">
                   <h1 className="property__name">
-                    {offer.name}
+                    {offer.title}
                   </h1>
-                  <button className={bookmarkButtonClass} type="button">
+                  <button className={`property__bookmark-button button ${offer?.isFavorite ? 'property__bookmark-button--active' : ''}`} type="button">
                     <svg className="property__bookmark-icon" width="31" height="33">
                       <use xlinkHref="#icon-bookmark"/>
                     </svg>
@@ -76,14 +81,14 @@ function Property({authorizationStatus, offers}: PropertyProps): JSX.Element {
                     <span style={{width: percent}}/>
                     <span className="visually-hidden">Rating</span>
                   </div>
-                  <span className="property__rating-value rating__value">{offer.rate}</span>
+                  <span className="property__rating-value rating__value">{offer.rating}</span>
                 </div>
                 <ul className="property__features">
                   <li className="property__feature property__feature--entire">
                     {offer.type}
                   </li>
                   <li className="property__feature property__feature--bedrooms">
-                    {offer.bedNumber} Bedrooms
+                    {offer.bedrooms} Bedrooms
                   </li>
                   <li className="property__feature property__feature--adults">
                     Max {offer.maxAdults} adults
@@ -97,7 +102,7 @@ function Property({authorizationStatus, offers}: PropertyProps): JSX.Element {
                   <h2 className="property__inside-title">What&apos;s inside</h2>
                   <ul className="property__inside-list">
                     {
-                      offer.includes.map((include, number) => (
+                      offer.goods.map((include, number) => (
                         <li className="property__inside-item" key={number.toString()}>
                           {include}
                         </li>
@@ -107,23 +112,33 @@ function Property({authorizationStatus, offers}: PropertyProps): JSX.Element {
                 </div>
                 {
                   offer.host
-                    ? <PropertyHost host={offer.host}/>
+                    ? <PropertyHost host={offer.host} offer={offer}/>
                     : null
                 }
-                <PropertyReviews authorizationStatus={authorizationStatus} reviews={offer.reviews ?? []}/>
+                <PropertyReviews reviews={reviews}/>
               </div>
             </div>
-            <section className="property__map map">
-              <Map offers={offersNeighbourhood}/>
-            </section>
+            {
+              nearOffers.length
+                ?
+                <section className="property__map map">
+                  <Map offers={nearOffers} selectedPlace={point}/>
+                </section>
+                : null
+            }
           </section>
-          <div className="container">
-            <PropertyNearPlaces offers={offersNeighbourhood}/>
-          </div>
+          {
+            nearOffers.length
+              ?
+              <div className="container">
+                <PropertyNearPlaces offers={nearOffers} offerChange={setPoint}/>
+              </div>
+              : null
+          }
         </main>
       </div>
     )
-    : <Navigate to={AppRoute.Main}/>;
+    : null;
 }
 
 export default Property;

@@ -1,56 +1,120 @@
 import {createReducer} from '@reduxjs/toolkit';
 import {cities as allCities} from '../mock/cities';
-import {offers} from '../mock/offers';
-import {City} from '../types/city';
-import {Offer} from '../types/offer';
-import {changeCity, changePoint, changeSort, sortPopular, sortPriceAsc, sortPriceDesc, sortTopRated} from './action';
-import {DEFAULT_POINT_ID, SortType} from '../const';
+import {City, PublicProfile, Review} from '../types/types';
+import {Offer} from '../types/types';
+import {
+  addReview,
+  changeCity,
+  changeSort, loadNearOffers,
+  loadOffer,
+  loadOffers, loadReviews,
+  requireAuthorization,
+  setError, setOfferDataLoading,
+  setUserInfo
+} from './action';
+import {AuthorizationStatus, SortType} from '../const';
 
 const DEFAULT_CITY_INDEX = 0;
 const DEFAULT_CITY = allCities[DEFAULT_CITY_INDEX];
 const DEFAULT_SORT = SortType.Popular;
 
-const getOffersByCity = (currentCity: City): Offer[] => offers.filter(({city}) => city === currentCity.title);
+const getOffersByCity = (offers: Offer[], currentCity: City): Offer[] => offers.filter(({city}) => city.name === currentCity.name);
 
-const initialState = {
+type InitialState = {
+  cities: City[],
+  city: City,
+  offers: Offer[],
+  cityOffers: Offer[],
+  sortedOffers: Offer[],
+  sortType: SortType,
+  authorizationStatus: AuthorizationStatus,
+  profile: PublicProfile | null,
+  isDataLoaded: boolean,
+  isOfferDataLoading: boolean,
+  error: string,
+  currentOffer: Offer | null,
+  nearOffers: Offer[],
+  reviews: Review[],
+};
+
+const initialState: InitialState = {
   cities: allCities,
   city: DEFAULT_CITY,
-  cityOffers: getOffersByCity(DEFAULT_CITY),
-  sortedOffers: getOffersByCity(DEFAULT_CITY),
+  offers: [],
+  cityOffers: [],
+  sortedOffers: [],
   sortType: DEFAULT_SORT,
-  point: DEFAULT_POINT_ID,
+  authorizationStatus: AuthorizationStatus.Unknown,
+  profile: null,
+  isDataLoaded: false,
+  isOfferDataLoading: false,
+  error: '',
+  currentOffer: null,
+  nearOffers: [],
+  reviews: [],
 };
 
 export const reducer = createReducer(initialState, (builder) => {
   builder
     .addCase(changeCity, (state, action) => {
       state.city = action.payload;
-      state.cityOffers = getOffersByCity(action.payload);
+      state.cityOffers = getOffersByCity(state.offers, action.payload);
       state.sortType = DEFAULT_SORT;
       state.sortedOffers = state.cityOffers;
     })
     .addCase(changeSort, (state, action) => {
       state.sortType = action.payload;
+      switch (action.payload) {
+        case SortType.PriceAsc:
+          state.sortedOffers.sort(
+            (nextOffer, currentOffer) => nextOffer.price - currentOffer.price,
+          );
+          break;
+        case SortType.PriceDesc:
+          state.sortedOffers.sort(
+            (nextOffer, currentOffer) => currentOffer.price - nextOffer.price,
+          );
+          break;
+        case SortType.TopRated:
+          state.sortedOffers.sort(
+            (nextOffer, currentOffer) => currentOffer.rating - nextOffer.rating,
+          );
+          break;
+        default:
+          state.sortedOffers = state.cityOffers;
+          break;
+      }
     })
-    .addCase(changePoint, (state, action) => {
-      state.point = action.payload;
-    })
-    .addCase(sortPopular, (state) => {
+    .addCase(loadOffers, (state, action) => {
+      state.offers = action.payload;
+      state.cityOffers = getOffersByCity(action.payload, state.city);
       state.sortedOffers = state.cityOffers;
+      state.isDataLoaded = true;
     })
-    .addCase(sortPriceAsc, (state) => {
-      state.sortedOffers.sort(
-        (nextOffer, currentOffer) => nextOffer.price - currentOffer.price,
-      );
+    .addCase(requireAuthorization, (state, action) => {
+      state.authorizationStatus = action.payload;
     })
-    .addCase(sortPriceDesc, (state) => {
-      state.sortedOffers.sort(
-        (nextOffer, currentOffer) => currentOffer.price - nextOffer.price,
-      );
+    .addCase(setUserInfo, (state, action) => {
+      state.profile = action.payload;
     })
-    .addCase(sortTopRated, (state) => {
-      state.sortedOffers.sort(
-        (nextOffer, currentOffer) => currentOffer.rate - nextOffer.rate,
-      );
+    .addCase(setError, (state, action) => {
+      state.error = action.payload;
+    })
+    .addCase(loadOffer, (state, action) => {
+      state.currentOffer = action.payload;
+      // state.nearOffers = [];
+      // state.reviews = [];
+    })
+    .addCase(loadNearOffers, (state, action) => {
+      state.nearOffers = action.payload;
+    })
+    .addCase(loadReviews, (state, action) => {
+      state.reviews = action.payload;
+    })
+    .addCase(addReview, (state, action) => {
+      state.reviews = action.payload;
+    })
+    .addCase(setOfferDataLoading, (state, action) => {
+      state.isOfferDataLoading = action.payload;
     });
 });

@@ -1,6 +1,6 @@
 import {RefObject, useEffect, useState} from 'react';
 import leaflet from 'leaflet';
-import {City} from '../types/city';
+import {City} from '../types/types';
 
 function useMap(mapRef: RefObject<HTMLElement>, city: City) {
   const [map, setMap] = useState<leaflet.Map | null>(null);
@@ -10,10 +10,10 @@ function useMap(mapRef: RefObject<HTMLElement>, city: City) {
       if (map === null) {
         const instance: leaflet.Map = leaflet.map(mapRef.current, {
           center: {
-            lat: city.coords[0],
-            lng: city.coords[1],
+            lat: city.location.latitude,
+            lng: city.location.longitude,
           },
-          zoom: city.zoom,
+          zoom: city.location.zoom,
         });
 
         leaflet
@@ -28,8 +28,8 @@ function useMap(mapRef: RefObject<HTMLElement>, city: City) {
         setMap(instance);
       } else {
         map.setView({
-          lat: city.coords[0],
-          lng: city.coords[1],
+          lat: city.location.latitude,
+          lng: city.location.longitude,
         });
         setMap(map);
       }

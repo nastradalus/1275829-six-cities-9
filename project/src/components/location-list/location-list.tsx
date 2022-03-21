@@ -2,7 +2,8 @@ import {useAppDispatch, useAppSelector} from '../../hooks';
 import {changeCity} from '../../store/action';
 
 function LocationList(): JSX.Element {
-  const {city: activeCity, cities} = useAppSelector(((state) => state));
+  const activeCity = useAppSelector(((state) => state.city));
+  const cities = useAppSelector(((state) => state.cities));
   const dispatch = useAppDispatch();
 
   return (
@@ -10,14 +11,14 @@ function LocationList(): JSX.Element {
       <ul className="locations__list tabs__list">
         {
           cities.map((city) => (
-            <li className="locations__item" key={city.title}>
+            <li className="locations__item" key={city.name}>
               <a
-                className={`locations__item-link tabs__item ${(city.title === activeCity.title) ? 'tabs__item--active' : ''}`}
+                className={`locations__item-link tabs__item ${(city.name === activeCity.name) ? 'tabs__item--active' : ''}`}
                 onClick={() => {
                   dispatch(changeCity(city));
                 }}
               >
-                <span>{city.title}</span>
+                <span>{city.name}</span>
               </a>
             </li>
           ))

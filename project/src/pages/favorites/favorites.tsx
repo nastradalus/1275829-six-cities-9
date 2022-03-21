@@ -1,42 +1,41 @@
 import Header from '../../components/header/header';
 import FavoriteList from '../../components/favorite-list/favorite-list';
 import Footer from '../../components/footer/footer';
-import {AuthorizationStatus} from '../../const';
-import {Offer, OffersByCity} from '../../types/offer';
+import {Offer, OffersByCity} from '../../types/types';
+import {useAppSelector} from '../../hooks';
 
 const sortOffersByCity = (offers: Offer[]): OffersByCity => {
   const offersByCity: OffersByCity = {};
 
   offers.forEach((offer) => {
     if (offer.isFavorite) {
-      if (typeof offersByCity[offer.city] === 'undefined') {
-        offersByCity[offer.city] = [];
+      if (typeof offersByCity[offer.city.name] === 'undefined') {
+        offersByCity[offer.city.name] = [];
       }
 
-      offersByCity[offer.city].push(offer);
+      offersByCity[offer.city.name].push(offer);
     }
   });
 
   return offersByCity;
 };
 
-type FavoritesProps = {
-  offers: Offer[]
-};
+function Favorites(): JSX.Element {
+  const offers = useAppSelector((state) => state.offers);
+  const favoriteOffers = sortOffersByCity(offers);
 
-function Favorites({offers}: FavoritesProps): JSX.Element {
   return (
     <div className="page">
-      <Header authorizationStatus={AuthorizationStatus.Auth}/>
+      <Header/>
 
       {
-        offers.length
+        favoriteOffers.length
           ?
           <main className="page__main page__main--favorites">
             <div className="page__favorites-container container">
               <section className="favorites">
                 <h1 className="favorites__title">Saved listing</h1>
-                <FavoriteList offersByCity={sortOffersByCity(offers)}/>
+                <FavoriteList offersByCity={favoriteOffers}/>
               </section>
             </div>
           </main>
