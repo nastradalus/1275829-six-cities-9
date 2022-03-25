@@ -18,7 +18,7 @@ import {
   loadOffers, loadReviews,
   redirectToRoute,
   requireAuthorization,
-  setError, setOfferDataLoading,
+  setError,
   setUserInfo
 } from './action';
 import {dropToken, saveToken} from '../services/token';
@@ -46,8 +46,6 @@ export const fetchOfferDataAction = createAsyncThunk(
   'api/fetchOfferData',
   async (offerId: number) => {
     try {
-      store.dispatch(setOfferDataLoading(true));
-
       const {data: offerData} = await api.get<Offer>(getOfferApiUrl(APIRoute.Offer, offerId));
       const {data: reviews} = await api.get<Review[]>(getOfferApiUrl(APIRoute.OfferComments, offerId));
       const {data: nearOffers} = await api.get<Offer[]>(getOfferApiUrl(APIRoute.NearOffer, offerId));
@@ -55,10 +53,7 @@ export const fetchOfferDataAction = createAsyncThunk(
       store.dispatch(loadOffer(offerData));
       store.dispatch(loadReviews(reviews));
       store.dispatch(loadNearOffers(nearOffers));
-
-      store.dispatch(setOfferDataLoading(false));
     } catch (error) {
-      store.dispatch(setOfferDataLoading(false));
       store.dispatch(redirectToRoute(AppRoute.NoPage));
       errorHandle(error);
     }

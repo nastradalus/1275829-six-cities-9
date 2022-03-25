@@ -5,7 +5,7 @@ import PropertyNearPlaces from '../../components/property-near-places/property-n
 import {CONVERT_RATE_TO_PERCENT, DEFAULT_POINT_ID} from '../../const';
 import Map from '../../components/map/map';
 import {useAppDispatch, useAppSelector} from '../../hooks';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {ActiveOfferType, ParamId} from '../../types/types';
 import {useParams} from 'react-router-dom';
 import {fetchOfferDataAction} from '../../store/api-actions';
@@ -20,18 +20,22 @@ function Property(): JSX.Element | null {
   const offer = useAppSelector((state) => state.currentOffer);
   const nearOffers = useAppSelector((state) => state.nearOffers);
   const reviews = useAppSelector((state) => state.reviews);
-  const isOfferDataLoading = useAppSelector((state) => state.isOfferDataLoading);
 
   const percent = (offer) ? `${offer.rating * CONVERT_RATE_TO_PERCENT}%` : '';
 
-  if (currentOfferId && (!offer || (offer && offer.id !== +currentOfferId)) && !isOfferDataLoading) {
-    dispatch(loadOffer(null));
-    dispatch(loadNearOffers([]));
-    dispatch(loadReviews([]));
-    dispatch(fetchOfferDataAction(+currentOfferId));
-  }
+  useEffect(() => {
+    if (currentOfferId) {
+      dispatch(fetchOfferDataAction(+currentOfferId));
 
-  if (isOfferDataLoading) {
+      return () => {
+        dispatch(loadOffer(null));
+        dispatch(loadNearOffers([]));
+        dispatch(loadReviews([]));
+      };
+    }
+  }, [currentOfferId]);
+
+  if (!offer) {
     return (<LoadingScreen/>);
   }
 

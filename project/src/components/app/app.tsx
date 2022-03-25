@@ -8,18 +8,18 @@ import NoAuthRoute from '../no-auth-route/no-auth-route';
 import AuthRoute from '../auth-route/auth-route';
 import {useAppSelector} from '../../hooks';
 import LoadingScreen from '../loading-screen/loading-screen';
-import HistoryRouter from '../history-route/history-route';
+import HistoryRouter from '../history-router/history-router';
 import browserHistory from '../../browser-history';
 import Property from '../../pages/property/property';
 
-const isCheckedAuth = (authorizationStatus: AuthorizationStatus): boolean =>
+const isUnknownAuth = (authorizationStatus: AuthorizationStatus): boolean =>
   authorizationStatus === AuthorizationStatus.Unknown;
 
 function App(): JSX.Element {
   const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
   const isDataLoaded = useAppSelector((state) => state.isDataLoaded);
 
-  if (isCheckedAuth(authorizationStatus) || !isDataLoaded) {
+  if (isUnknownAuth(authorizationStatus) || !isDataLoaded) {
     return (
       <LoadingScreen/>
     );

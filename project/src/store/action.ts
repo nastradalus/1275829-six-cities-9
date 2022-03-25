@@ -13,4 +13,3 @@ export const loadOffer = createAction<Offer | null>('loadOffer');
 export const loadNearOffers = createAction<Offer[]>('loadNearsOffer');
 export const loadReviews = createAction<Review[]>('loadReviews');
 export const addReview = createAction<Review[]>('addReview');
-export const setOfferDataLoading = createAction<boolean>('setOfferDataLoading');

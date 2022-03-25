@@ -9,7 +9,7 @@ import {
   loadOffer,
   loadOffers, loadReviews,
   requireAuthorization,
-  setError, setOfferDataLoading,
+  setError,
   setUserInfo
 } from './action';
 import {AuthorizationStatus, SortType} from '../const';
@@ -30,7 +30,6 @@ type InitialState = {
   authorizationStatus: AuthorizationStatus,
   profile: PublicProfile | null,
   isDataLoaded: boolean,
-  isOfferDataLoading: boolean,
   error: string,
   currentOffer: Offer | null,
   nearOffers: Offer[],
@@ -47,7 +46,6 @@ const initialState: InitialState = {
   authorizationStatus: AuthorizationStatus.Unknown,
   profile: null,
   isDataLoaded: false,
-  isOfferDataLoading: false,
   error: '',
   currentOffer: null,
   nearOffers: [],
@@ -102,8 +100,6 @@ export const reducer = createReducer(initialState, (builder) => {
     })
     .addCase(loadOffer, (state, action) => {
       state.currentOffer = action.payload;
-      // state.nearOffers = [];
-      // state.reviews = [];
     })
     .addCase(loadNearOffers, (state, action) => {
       state.nearOffers = action.payload;
@@ -113,8 +109,5 @@ export const reducer = createReducer(initialState, (builder) => {
     })
     .addCase(addReview, (state, action) => {
       state.reviews = action.payload;
-    })
-    .addCase(setOfferDataLoading, (state, action) => {
-      state.isOfferDataLoading = action.payload;
     });
 });
