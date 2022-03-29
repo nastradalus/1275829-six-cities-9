@@ -24,7 +24,7 @@ function HistoryRouter({
 
   useLayoutEffect(() => history.listen((historyInfo) => {
     setState(historyInfo);
-    dispatch(setActivePoint(DEFAULT_POINT_ID))
+    dispatch(setActivePoint(DEFAULT_POINT_ID));
   }), [history]);
 
   return (

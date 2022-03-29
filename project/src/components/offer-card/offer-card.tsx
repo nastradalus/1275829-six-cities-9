@@ -1,9 +1,11 @@
-import {AppRoute, DEFAULT_POINT_ID, OfferCardType} from '../../const';
+import {AppRoute, AuthorizationStatus, DEFAULT_POINT_ID, OfferCardType} from '../../const';
 import {Offer} from '../../types/types';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {getPercentFromRate} from '../../tools';
 import {setActivePoint} from '../../store/point-data/point-data';
-import {useAppDispatch} from '../../hooks';
+import {useAppDispatch, useAppSelector} from '../../hooks';
+import {updateFavoriteStatusAction} from '../../store/api-actions';
+import {updateFavoriteStatus} from '../../store/offers-data/offers-data';
 
 type OfferCardProps = {
   place: Offer,
@@ -11,8 +13,11 @@ type OfferCardProps = {
 };
 
 function OfferCard({place, offerCardType}: OfferCardProps): JSX.Element {
-  const {id, title, type, isPremium, isFavorite, rating, images, price} = place;
+  const {id: offerId, title, type, isPremium, isFavorite, rating, images, price} = place;
+  const authorizationStatus = useAppSelector(({USER}) => USER.authorizationStatus);
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
   const image = images ? images[0] : null;
   const percent = getPercentFromRate(rating);
   const bookmarkButtonClass = `place-card__bookmark-button button ${isFavorite ? 'place-card__bookmark-button--active' : ''}`;
@@ -27,10 +32,26 @@ function OfferCard({place, offerCardType}: OfferCardProps): JSX.Element {
       ? 'near-places__image-wrapper'
       : 'cities__place-card';
 
+  const updateFavoriteStatusHandle = (id: number, status: boolean) => {
+    dispatch(updateFavoriteStatus({id, status}));
+  };
+
+  const bookmarkClickHandler = () => {
+    if (authorizationStatus !== AuthorizationStatus.Auth) {
+      navigate(AppRoute.SignIn);
+    }
+
+    dispatch(updateFavoriteStatusAction({
+      offerId: offerId,
+      favoriteStatus: !isFavorite,
+      updateStatusHandle: updateFavoriteStatusHandle,
+    }));
+  };
+
   return (
     <article
       className={`${articleClass} place-card`}
-      onMouseEnter={() => dispatch(setActivePoint(id))}
+      onMouseEnter={() => dispatch(setActivePoint(offerId))}
       onMouseLeave={() => dispatch(setActivePoint(DEFAULT_POINT_ID))}
     >
       {
@@ -48,7 +69,7 @@ function OfferCard({place, offerCardType}: OfferCardProps): JSX.Element {
             {
               image
                 ?
-                <Link to={`${AppRoute.Room}/${id}`}>
+                <Link to={`${AppRoute.Room}/${offerId}`}>
                   <img className="place-card__image" src={image} width="260" height="200" alt="Place image"/>
                 </Link>
                 : null
@@ -62,7 +83,11 @@ function OfferCard({place, offerCardType}: OfferCardProps): JSX.Element {
             <b className="place-card__price-value">&euro;{price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
-          <button className={bookmarkButtonClass} type="button">
+          <button
+            className={bookmarkButtonClass}
+            type="button"
+            onClick={bookmarkClickHandler}
+          >
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref="#icon-bookmark"/>
             </svg>
@@ -76,7 +101,7 @@ function OfferCard({place, offerCardType}: OfferCardProps): JSX.Element {
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={`${AppRoute.Room}/${id}`}>{title}</Link>
+          <Link to={`${AppRoute.Room}/${offerId}`}>{title}</Link>
         </h2>
         <p className="place-card__type">{type}</p>
       </div>

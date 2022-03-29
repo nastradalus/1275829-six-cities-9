@@ -9,21 +9,34 @@ const DEFAULT_SORT = SortType.Popular;
 
 const getOffersByCity = (offers: Offer[], currentCity: City): Offer[] => offers.filter(({city}) => city.name === currentCity.name);
 
+const updateOfferFavoriteStatus = (offers: Offer[], id: number, status: boolean): Offer[] => {
+  for (const offer of offers) {
+    if (offer.id === id) {
+      offer.isFavorite = status;
+      return offers;
+    }
+  }
+
+  return offers;
+};
+
 const initialState: {
   cities: City[],
   city: City,
+  sortType: SortType,
   offers: Offer[],
   cityOffers: Offer[],
-  sortType: SortType,
   sortedOffers: Offer[],
+  favoriteOffers: Offer[],
   isDataLoaded: boolean,
 } = {
   cities: allCities,
   city: DEFAULT_CITY,
+  sortType: DEFAULT_SORT,
   offers: [],
   cityOffers: [],
-  sortType: DEFAULT_SORT,
   sortedOffers: [],
+  favoriteOffers: [],
   isDataLoaded: false,
 };
 
@@ -31,6 +44,9 @@ export const offersData = createSlice({
   name: NameSpace.offers,
   initialState,
   reducers: {
+    resetDataLoading: (state) => {
+      state.isDataLoaded = false;
+    },
     changeCity: (state, action) => {
       state.city = action.payload;
       state.cityOffers = getOffersByCity(state.offers, action.payload);
@@ -64,9 +80,19 @@ export const offersData = createSlice({
       state.offers = action.payload;
       state.cityOffers = getOffersByCity(action.payload, state.city);
       state.sortedOffers = state.cityOffers;
+      state.favoriteOffers = [];
       state.isDataLoaded = true;
+    },
+    loadFavoriteOffers: (state, action) => {
+      state.favoriteOffers = action.payload;
+    },
+    updateFavoriteStatus: (state, action) => {
+      state.offers = updateOfferFavoriteStatus(state.offers, action.payload.id, action.payload.status);
+      state.cityOffers = updateOfferFavoriteStatus(state.cityOffers, action.payload.id, action.payload.status);
+      state.sortedOffers = updateOfferFavoriteStatus(state.sortedOffers, action.payload.id, action.payload.status);
+      state.favoriteOffers = state.favoriteOffers.filter(({id}) => id !== action.payload.id);
     },
   },
 });
 
-export const {changeCity, changeSort, loadOffers} = offersData.actions;
+export const {changeCity, changeSort, loadOffers, updateFavoriteStatus, loadFavoriteOffers, resetDataLoading} = offersData.actions;

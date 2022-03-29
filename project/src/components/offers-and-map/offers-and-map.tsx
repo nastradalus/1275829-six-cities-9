@@ -1,7 +1,5 @@
 import SortForm from '../sort-form/sort-form';
-import OfferCard from '../offer-card/offer-card';
 import Map from '../map/map';
-import {OfferCardType} from '../../const';
 import {useAppSelector} from '../../hooks';
 import OffersList from '../offers-list/offers-list';
 

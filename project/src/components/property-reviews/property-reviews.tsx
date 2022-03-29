@@ -1,6 +1,5 @@
 import PropertyReviewForm from '../property-review-form/property-review-form';
 import {AuthorizationStatus, DateFormat, MONTHS} from '../../const';
-import {Review} from '../../types/types';
 import {useAppSelector} from '../../hooks';
 import {getPercentFromRate} from '../../tools';
 

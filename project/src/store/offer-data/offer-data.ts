@@ -28,7 +28,12 @@ export const offerData = createSlice({
     addReview: (state, action) => {
       state.reviews = action.payload;
     },
+    updateOfferFavoriteStatus: (state, action) => {
+      if (state.currentOffer !== null) {
+        state.currentOffer.isFavorite = action.payload.status;
+      }
+    },
   },
 });
 
-export const {loadOffer, loadNearOffers, loadReviews, addReview} = offerData.actions;
+export const {loadOffer, loadNearOffers, loadReviews, addReview, updateOfferFavoriteStatus} = offerData.actions;

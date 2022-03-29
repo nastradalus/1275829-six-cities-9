@@ -1,7 +1,7 @@
 import {AppRoute, AuthorizationStatus} from '../../const';
 import {Link} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from '../../hooks';
-import {logoutAction} from '../../store/api-actions';
+import {fetchOffersAction, logoutAction} from '../../store/api-actions';
 import {memo} from 'react';
 
 type HeaderProps = {
@@ -59,6 +59,7 @@ function Header({isLoginPage = false}: HeaderProps): JSX.Element {
                             onClick={(evt) => {
                               evt.preventDefault();
                               dispatch(logoutAction());
+                              dispatch(fetchOffersAction());
                             }}
                           >
                             Sign out

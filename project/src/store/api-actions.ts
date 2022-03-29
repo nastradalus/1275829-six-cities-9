@@ -9,11 +9,11 @@ import {
   Offer,
   Profile,
   PublicProfile,
-  Review
+  Review, UpdateFavoriteStatusActionProps
 } from '../types/types';
 import {redirectToRoute} from './action';
 import {addReview, loadNearOffers, loadOffer, loadReviews} from './offer-data/offer-data';
-import {loadOffers} from './offers-data/offers-data';
+import {loadOffers, loadFavoriteOffers, resetDataLoading} from './offers-data/offers-data';
 import {requireAuthorization, setUserInfo} from './user-data/user-data';
 import {setError} from './error-process/error-process';
 import {dropToken, saveToken} from '../services/token';
@@ -23,14 +23,33 @@ const cutProfile = (
 ): PublicProfile =>
   Object.assign({id, isPro, email, name, avatarUrl});
 
+const getFavoriteStatusApiUrl = (url: string, offerId: number, status: boolean) => {
+  let newUrl = url.replace(Placeholder.OfferId, String(offerId));
+  newUrl = newUrl.replace(Placeholder.FavoriteStatus, String(+status));
+
+  return newUrl;
+};
 const getOfferApiUrl = (url: string, offerId: number) => url.replace(Placeholder.OfferId, String(offerId));
 
 export const fetchOffersAction = createAsyncThunk(
   'api/fetchOffers',
   async () => {
     try {
+      store.dispatch(resetDataLoading());
       const {data} = await api.get<Offer[]>(APIRoute.Offers);
       store.dispatch(loadOffers(data));
+    } catch (error) {
+      errorHandle(error);
+    }
+  },
+);
+
+export const fetchFavoriteOffersAction = createAsyncThunk(
+  'api/fetchFavoriteOffers',
+  async () => {
+    try {
+      const {data} = await api.get<Offer[]>(APIRoute.Favorites);
+      store.dispatch(loadFavoriteOffers(data));
     } catch (error) {
       errorHandle(error);
     }
@@ -70,6 +89,26 @@ export const addReviewAction = createAsyncThunk(
         {comment, rating},
       );
       store.dispatch(addReview(data));
+    } catch (error) {
+      errorHandle(error);
+    }
+  },
+);
+
+export const updateFavoriteStatusAction = createAsyncThunk(
+  'api/updateFavoriteStatus',
+  async (
+    {
+      offerId,
+      favoriteStatus,
+      updateStatusHandle,
+    }: UpdateFavoriteStatusActionProps,
+  ) => {
+    try {
+      const {data} = await api.post<Offer>(
+        getFavoriteStatusApiUrl(APIRoute.SetFavoriteStatus, offerId, favoriteStatus),
+      );
+      updateStatusHandle(data.id, data.isFavorite);
     } catch (error) {
       errorHandle(error);
     }

@@ -7,10 +7,13 @@ import {useAppDispatch, useAppSelector} from '../../hooks';
 import {useEffect} from 'react';
 import {ParamId} from '../../types/types';
 import {useParams} from 'react-router-dom';
-import {fetchOfferDataAction} from '../../store/api-actions';
+import {fetchOfferDataAction, updateFavoriteStatusAction} from '../../store/api-actions';
 import {loadOffer, loadReviews, loadNearOffers} from '../../store/offer-data/offer-data';
 import LoadingScreen from '../../components/loading-screen/loading-screen';
 import {getPercentFromRate} from '../../tools';
+import {updateOfferFavoriteStatus} from '../../store/offer-data/offer-data';
+import {updateFavoriteStatus} from '../../store/offers-data/offers-data';
+import {DEFAULT_POINT_ID} from '../../const';
 
 function Property(): JSX.Element {
   const {id: currentOfferId} = useParams<ParamId>();
@@ -20,6 +23,11 @@ function Property(): JSX.Element {
   const nearOffers = useAppSelector(({OFFER}) => OFFER.nearOffers);
 
   const percent = (offer) ? getPercentFromRate(offer.rating) : '';
+
+  const updateFavoriteStatusHandle = (id: number, status: boolean) => {
+    dispatch(updateOfferFavoriteStatus({id, status}));
+    dispatch(updateFavoriteStatus({id, status}));
+  };
 
   useEffect(() => {
     if (currentOfferId) {
@@ -67,7 +75,17 @@ function Property(): JSX.Element {
                   <h1 className="property__name">
                     {offer.title}
                   </h1>
-                  <button className={`property__bookmark-button button ${offer?.isFavorite ? 'property__bookmark-button--active' : ''}`} type="button">
+                  <button
+                    className={`property__bookmark-button button ${offer?.isFavorite ? 'property__bookmark-button--active' : ''}`}
+                    type="button"
+                    onClick={() => {
+                      dispatch(updateFavoriteStatusAction({
+                        offerId: currentOfferId ? +currentOfferId : DEFAULT_POINT_ID,
+                        favoriteStatus: !offer?.isFavorite,
+                        updateStatusHandle: updateFavoriteStatusHandle,
+                      }));
+                    }}
+                  >
                     <svg className="property__bookmark-icon" width="31" height="33">
                       <use xlinkHref="#icon-bookmark"/>
                     </svg>
