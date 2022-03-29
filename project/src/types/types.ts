@@ -25,8 +25,6 @@ export type Review = {
   }
 };
 
-export type ActiveOfferType = number;
-
 export type Offer = {
   id: number,
   title: string,

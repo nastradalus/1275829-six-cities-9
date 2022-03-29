@@ -1,16 +1,13 @@
 import SortForm from '../sort-form/sort-form';
 import OfferCard from '../offer-card/offer-card';
 import Map from '../map/map';
-import {DEFAULT_POINT_ID, OfferCardType} from '../../const';
+import {OfferCardType} from '../../const';
 import {useAppSelector} from '../../hooks';
-import {useState} from 'react';
-import {ActiveOfferType} from '../../types/types';
+import OffersList from '../offers-list/offers-list';
 
 function OfferAndMap(): JSX.Element {
-  const [point, setPoint] = useState<ActiveOfferType>(DEFAULT_POINT_ID);
-  const activeCity = useAppSelector(((state) => state.city));
-  const cityOffers = useAppSelector(((state) => state.cityOffers));
-  const sortedOffers = useAppSelector(((state) => state.sortedOffers));
+  const activeCity = useAppSelector((({OFFERS}) => OFFERS.city));
+  const cityOffers = useAppSelector((({OFFERS}) => OFFERS.cityOffers));
 
   return (
     <div className="cities">
@@ -22,22 +19,11 @@ function OfferAndMap(): JSX.Element {
               <h2 className="visually-hidden">Places</h2>
               <b className="places__found">{cityOffers.length} places to stay in {activeCity.name}</b>
               <SortForm/>
-              <div className="cities__places-list places__list tabs__content">
-                {
-                  sortedOffers.map((offer) => (
-                    <OfferCard
-                      key={offer.id}
-                      place={offer}
-                      offerCardType={OfferCardType.Cities}
-                      offerChange={setPoint}
-                    />),
-                  )
-                }
-              </div>
+              <OffersList/>
             </section>
             <div className="cities__right-section">
               <section data-current={activeCity.name} className="cities__map map">
-                <Map offers={cityOffers} selectedPlace={point}/>
+                <Map offers={cityOffers}/>
               </section>
             </div>
           </div>

@@ -2,26 +2,24 @@ import Header from '../../components/header/header';
 import PropertyHost from '../../components/property-host/property-host';
 import PropertyReviews from '../../components/property-reviews/property-reviews';
 import PropertyNearPlaces from '../../components/property-near-places/property-near-places';
-import {CONVERT_RATE_TO_PERCENT, DEFAULT_POINT_ID} from '../../const';
 import Map from '../../components/map/map';
 import {useAppDispatch, useAppSelector} from '../../hooks';
-import {useEffect, useState} from 'react';
-import {ActiveOfferType, ParamId} from '../../types/types';
+import {useEffect} from 'react';
+import {ParamId} from '../../types/types';
 import {useParams} from 'react-router-dom';
 import {fetchOfferDataAction} from '../../store/api-actions';
-import {loadNearOffers, loadOffer, loadReviews} from '../../store/action';
+import {loadOffer, loadReviews, loadNearOffers} from '../../store/offer-data/offer-data';
 import LoadingScreen from '../../components/loading-screen/loading-screen';
+import {getPercentFromRate} from '../../tools';
 
-function Property(): JSX.Element | null {
-  const [point, setPoint] = useState<ActiveOfferType>(DEFAULT_POINT_ID);
+function Property(): JSX.Element {
   const {id: currentOfferId} = useParams<ParamId>();
   const dispatch = useAppDispatch();
 
-  const offer = useAppSelector((state) => state.currentOffer);
-  const nearOffers = useAppSelector((state) => state.nearOffers);
-  const reviews = useAppSelector((state) => state.reviews);
+  const offer = useAppSelector(({OFFER}) => OFFER.currentOffer);
+  const nearOffers = useAppSelector(({OFFER}) => OFFER.nearOffers);
 
-  const percent = (offer) ? `${offer.rating * CONVERT_RATE_TO_PERCENT}%` : '';
+  const percent = (offer) ? getPercentFromRate(offer.rating) : '';
 
   useEffect(() => {
     if (currentOfferId) {
@@ -34,10 +32,6 @@ function Property(): JSX.Element | null {
       };
     }
   }, [currentOfferId]);
-
-  if (!offer) {
-    return (<LoadingScreen/>);
-  }
 
   return offer
     ? (
@@ -119,14 +113,14 @@ function Property(): JSX.Element | null {
                     ? <PropertyHost host={offer.host} offer={offer}/>
                     : null
                 }
-                <PropertyReviews reviews={reviews}/>
+                <PropertyReviews/>
               </div>
             </div>
             {
               nearOffers.length
                 ?
                 <section className="property__map map">
-                  <Map offers={nearOffers} selectedPlace={point}/>
+                  <Map offers={nearOffers}/>
                 </section>
                 : null
             }
@@ -135,14 +129,14 @@ function Property(): JSX.Element | null {
             nearOffers.length
               ?
               <div className="container">
-                <PropertyNearPlaces offers={nearOffers} offerChange={setPoint}/>
+                <PropertyNearPlaces offers={nearOffers}/>
               </div>
               : null
           }
         </main>
       </div>
     )
-    : null;
+    : <LoadingScreen/>;
 }
 
 export default Property;

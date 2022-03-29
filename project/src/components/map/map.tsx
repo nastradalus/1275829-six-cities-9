@@ -2,16 +2,16 @@ import leaflet from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import {useEffect, useRef} from 'react';
 import useMap from '../../hooks/use-map';
-import {ActiveOfferType, Offer} from '../../types/types';
+import {Offer} from '../../types/types';
 import {useAppSelector} from '../../hooks';
 
 type MapProps = {
   offers: Offer[],
-  selectedPlace: ActiveOfferType,
 };
 
-function Map({offers, selectedPlace}: MapProps): JSX.Element {
-  const city = useAppSelector(((state) => state.city));
+function Map({offers}: MapProps): JSX.Element {
+  const city = useAppSelector((({OFFERS}) => OFFERS.city));
+  const selectedPlace = useAppSelector((({POINT}) => POINT.activePoint));
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
 

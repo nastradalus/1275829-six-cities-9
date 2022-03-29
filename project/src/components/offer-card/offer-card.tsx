@@ -1,17 +1,20 @@
-import {AppRoute, CONVERT_RATE_TO_PERCENT, DEFAULT_POINT_ID, OfferCardType} from '../../const';
-import {ActiveOfferType, Offer} from '../../types/types';
+import {AppRoute, DEFAULT_POINT_ID, OfferCardType} from '../../const';
+import {Offer} from '../../types/types';
 import {Link} from 'react-router-dom';
+import {getPercentFromRate} from '../../tools';
+import {setActivePoint} from '../../store/point-data/point-data';
+import {useAppDispatch} from '../../hooks';
 
 type OfferCardProps = {
   place: Offer,
   offerCardType: string,
-  offerChange: (id: ActiveOfferType) => void,
 };
 
-function OfferCard({place, offerCardType, offerChange}: OfferCardProps): JSX.Element {
+function OfferCard({place, offerCardType}: OfferCardProps): JSX.Element {
   const {id, title, type, isPremium, isFavorite, rating, images, price} = place;
+  const dispatch = useAppDispatch();
   const image = images ? images[0] : null;
-  const percent = `${rating * CONVERT_RATE_TO_PERCENT}%`;
+  const percent = getPercentFromRate(rating);
   const bookmarkButtonClass = `place-card__bookmark-button button ${isFavorite ? 'place-card__bookmark-button--active' : ''}`;
 
   const articleClass =
@@ -27,8 +30,8 @@ function OfferCard({place, offerCardType, offerChange}: OfferCardProps): JSX.Ele
   return (
     <article
       className={`${articleClass} place-card`}
-      onMouseEnter={() => offerChange(id)}
-      onMouseLeave={() => offerChange(DEFAULT_POINT_ID)}
+      onMouseEnter={() => dispatch(setActivePoint(id))}
+      onMouseLeave={() => dispatch(setActivePoint(DEFAULT_POINT_ID))}
     >
       {
         isPremium

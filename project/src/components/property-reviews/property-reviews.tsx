@@ -1,11 +1,8 @@
 import PropertyReviewForm from '../property-review-form/property-review-form';
-import {AuthorizationStatus, CONVERT_RATE_TO_PERCENT, DateFormat, MONTHS} from '../../const';
+import {AuthorizationStatus, DateFormat, MONTHS} from '../../const';
 import {Review} from '../../types/types';
 import {useAppSelector} from '../../hooks';
-
-type PropertyReviewsProps = {
-  reviews: Review[]
-};
+import {getPercentFromRate} from '../../tools';
 
 const getZeroRoundMonth = (target: number): string => (target < 10) ? `0${target}` : `${target}`;
 
@@ -26,8 +23,9 @@ const getFormatDate = (date: string, format: string): string => {
   }
 };
 
-function PropertyReviews({reviews}: PropertyReviewsProps): JSX.Element {
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+function PropertyReviews(): JSX.Element {
+  const reviews = useAppSelector(({OFFER}) => OFFER.reviews);
+  const authorizationStatus = useAppSelector(({USER}) => USER.authorizationStatus);
 
   return (
     <section className="property__reviews reviews">
@@ -45,7 +43,7 @@ function PropertyReviews({reviews}: PropertyReviewsProps): JSX.Element {
               <div className="reviews__info">
                 <div className="reviews__rating rating">
                   <div className="reviews__stars rating__stars">
-                    <span style={{width: `${rating * CONVERT_RATE_TO_PERCENT}%`}}/>
+                    <span style={{width: getPercentFromRate(rating)}}/>
                     <span className="visually-hidden">Rating</span>
                   </div>
                 </div>

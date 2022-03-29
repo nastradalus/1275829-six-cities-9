@@ -1,6 +1,7 @@
 import {Offer} from '../../types/types';
-import {AppRoute, CONVERT_RATE_TO_PERCENT} from '../../const';
+import {AppRoute} from '../../const';
 import {Link} from 'react-router-dom';
+import {getPercentFromRate} from '../../tools';
 
 type FavoriteCardProps = {
   offer: Offer
@@ -8,7 +9,7 @@ type FavoriteCardProps = {
 
 function FavoriteCard({offer}: FavoriteCardProps): JSX.Element {
   const {isPremium, type, images, price, rating, title, id} = offer;
-  const percent = `${rating * CONVERT_RATE_TO_PERCENT}%`;
+  const percent = getPercentFromRate(rating);
 
   return (
     <article className="favorites__card place-card">

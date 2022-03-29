@@ -1,9 +1,9 @@
 import {useAppDispatch, useAppSelector} from '../../hooks';
-import {changeCity} from '../../store/action';
+import {changeCity} from '../../store/offers-data/offers-data';
 
 function LocationList(): JSX.Element {
-  const activeCity = useAppSelector(((state) => state.city));
-  const cities = useAppSelector(((state) => state.cities));
+  const activeCity = useAppSelector((({OFFERS}) => OFFERS.city));
+  const cities = useAppSelector((({OFFERS}) => OFFERS.cities));
   const dispatch = useAppDispatch();
 
   return (

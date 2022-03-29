@@ -11,16 +11,11 @@ import {
   PublicProfile,
   Review
 } from '../types/types';
-import {
-  addReview,
-  loadNearOffers,
-  loadOffer,
-  loadOffers, loadReviews,
-  redirectToRoute,
-  requireAuthorization,
-  setError,
-  setUserInfo
-} from './action';
+import {redirectToRoute} from './action';
+import {addReview, loadNearOffers, loadOffer, loadReviews} from './offer-data/offer-data';
+import {loadOffers} from './offers-data/offers-data';
+import {requireAuthorization, setUserInfo} from './user-data/user-data';
+import {setError} from './error-process/error-process';
 import {dropToken, saveToken} from '../services/token';
 
 const cutProfile = (

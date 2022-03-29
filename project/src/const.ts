@@ -86,3 +86,11 @@ export enum HTTP_CODE {
   UNAUTHORIZED = 401,
   NOT_FOUND = 404,
 }
+
+export enum NameSpace {
+  offer = 'OFFER',
+  offers = 'OFFERS',
+  user = 'USER',
+  error = 'ERROR',
+  point = 'POINT',
+}

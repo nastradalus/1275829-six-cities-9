@@ -21,7 +21,7 @@ const sortOffersByCity = (offers: Offer[]): OffersByCity => {
 };
 
 function Favorites(): JSX.Element {
-  const offers = useAppSelector((state) => state.offers);
+  const offers = useAppSelector(({OFFERS}) => OFFERS.offers);
   const favoriteOffers = sortOffersByCity(offers);
 
   return (

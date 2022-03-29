@@ -2,14 +2,14 @@ import {AppRoute, AuthorizationStatus} from '../../const';
 import {Link} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import {logoutAction} from '../../store/api-actions';
+import {memo} from 'react';
 
 type HeaderProps = {
   isLoginPage?: boolean
 };
 
 function Header({isLoginPage = false}: HeaderProps): JSX.Element {
-  const profile = useAppSelector((state) => state.profile);
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const {profile, authorizationStatus} = useAppSelector(({USER}) => USER);
   const dispatch = useAppDispatch();
 
   return (
@@ -77,4 +77,4 @@ function Header({isLoginPage = false}: HeaderProps): JSX.Element {
   );
 }
 
-export default Header;
+export default memo(Header);

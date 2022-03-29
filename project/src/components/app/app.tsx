@@ -16,8 +16,8 @@ const isUnknownAuth = (authorizationStatus: AuthorizationStatus): boolean =>
   authorizationStatus === AuthorizationStatus.Unknown;
 
 function App(): JSX.Element {
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
-  const isDataLoaded = useAppSelector((state) => state.isDataLoaded);
+  const authorizationStatus = useAppSelector(({USER}) => USER.authorizationStatus);
+  const isDataLoaded = useAppSelector(({OFFERS}) => OFFERS.isDataLoaded);
 
   if (isUnknownAuth(authorizationStatus) || !isDataLoaded) {
     return (

@@ -4,7 +4,7 @@ import OfferAndMap from '../../components/offers-and-map/offers-and-map';
 import {useAppSelector} from '../../hooks';
 
 function Main(): JSX.Element {
-  const cityOffers = useAppSelector((state) => state.cityOffers);
+  const cityOffers = useAppSelector(({OFFERS}) => OFFERS.cityOffers);
 
   return (
     <div className="page page--gray page--main">
