@@ -1,19 +1,22 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {NameSpace} from '../../const';
 import {Offer, Review} from '../../types/types';
+import {updateOfferFavoriteStatus} from '../../tools';
 
 const initialState: {
   currentOffer: Offer | null,
   nearOffers: Offer[],
   reviews: Review[],
+  isFormDisabled: boolean,
 } = {
   currentOffer: null,
   nearOffers: [],
   reviews: [],
+  isFormDisabled: false,
 };
 
 export const offerData = createSlice({
-  name: NameSpace.offer,
+  name: NameSpace.Offer,
   initialState,
   reducers: {
     loadOffer: (state, action) => {
@@ -28,12 +31,21 @@ export const offerData = createSlice({
     addReview: (state, action) => {
       state.reviews = action.payload;
     },
-    updateOfferFavoriteStatus: (state, action) => {
+    disableForm: (state) => {
+      state.isFormDisabled = true;
+    },
+    enableForm: (state) => {
+      state.isFormDisabled = false;
+    },
+    updateCurrentOfferFavoriteStatus: (state, action) => {
       if (state.currentOffer !== null) {
         state.currentOffer.isFavorite = action.payload.status;
       }
     },
+    updateNearOffersFavoriteStatus: (state, action) => {
+      state.nearOffers = updateOfferFavoriteStatus(state.nearOffers, action.payload.id, action.payload.status);
+    },
   },
 });
 
-export const {loadOffer, loadNearOffers, loadReviews, addReview, updateOfferFavoriteStatus} = offerData.actions;
+export const {loadOffer, loadNearOffers, loadReviews, addReview, updateCurrentOfferFavoriteStatus, updateNearOffersFavoriteStatus, disableForm, enableForm} = offerData.actions;

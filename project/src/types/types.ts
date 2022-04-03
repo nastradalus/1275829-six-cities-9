@@ -88,7 +88,7 @@ export type OfferActionProps = {
 export type UpdateFavoriteStatusActionProps = {
   offerId: number,
   favoriteStatus: boolean,
-  updateStatusHandle: (id: number, status: boolean) => void;
+  onUpdateStatus: (id: number, status: boolean) => void;
 };
 
 export type AddReviewActionProps =  OfferActionProps & FormReview;

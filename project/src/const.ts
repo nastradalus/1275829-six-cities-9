@@ -1,4 +1,4 @@
-export const TIMEOUT_SHOW_ERROR = 500;
+export const TIMEOUT_SHOW_ERROR = 2000;
 
 export const DEFAULT_POINT_ID = -1;
 
@@ -69,7 +69,7 @@ export enum Placeholder {
   FavoriteStatus = '{status}',
 }
 
-export enum APIRoute {
+export enum ApiRoute {
   Login = '/login',
   Logout = '/logout',
   Offers = '/hotels',
@@ -81,16 +81,21 @@ export enum APIRoute {
   AddOfferComment = '/comments/{hotelId}',
 }
 
-export enum HTTP_CODE {
-  BAD_REQUEST = 400,
-  UNAUTHORIZED = 401,
-  NOT_FOUND = 404,
+export enum HttpCode {
+  BadRequest = 400,
+  Unauthorized = 401,
+  MotFound = 404,
 }
 
 export enum NameSpace {
-  offer = 'OFFER',
-  offers = 'OFFERS',
-  user = 'USER',
-  error = 'ERROR',
-  point = 'POINT',
+  Offer = 'OFFER',
+  Offers = 'OFFERS',
+  User = 'USER',
+  Error = 'ERROR',
+  Point = 'POINT',
+}
+
+export enum LoginFormMessageError {
+  Email = 'Некорректная почта.',
+  Password = 'Пароль должен содержать букву и цифру.',
 }

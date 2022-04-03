@@ -1,11 +1,11 @@
 import {useAppDispatch, useAppSelector} from '../../hooks';
-import {SortState, SortType} from '../../const';
+import {NameSpace, SortState, SortType} from '../../const';
 import {changeSort} from '../../store/offers-data/offers-data';
 import {useState} from 'react';
 
 function SortForm(): JSX.Element {
   const [sortState, setSortState] = useState(SortState.Closed);
-  const sortType = useAppSelector(({OFFERS}) => OFFERS.sortType);
+  const sortType = useAppSelector(({[NameSpace.Offers]: offers}) => offers.sortType);
   const dispatch = useAppDispatch();
 
   return (

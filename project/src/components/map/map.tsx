@@ -1,17 +1,18 @@
 import leaflet from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import {useEffect, useRef} from 'react';
+import {memo, useEffect, useRef} from 'react';
 import useMap from '../../hooks/use-map';
 import {Offer} from '../../types/types';
 import {useAppSelector} from '../../hooks';
+import {NameSpace} from '../../const';
 
 type MapProps = {
   offers: Offer[],
 };
 
 function Map({offers}: MapProps): JSX.Element {
-  const city = useAppSelector((({OFFERS}) => OFFERS.city));
-  const selectedPlace = useAppSelector((({POINT}) => POINT.activePoint));
+  const city = useAppSelector((({[NameSpace.Offers]: offersState}) => offersState.city));
+  const selectedPlace = useAppSelector((({[NameSpace.Point]: pointState}) => pointState.activePoint));
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
 
@@ -60,4 +61,4 @@ function Map({offers}: MapProps): JSX.Element {
   );
 }
 
-export default Map;
+export default memo(Map);

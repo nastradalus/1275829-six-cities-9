@@ -1,7 +1,8 @@
 import {useAppSelector} from '../../hooks';
+import {NameSpace} from '../../const';
 
 function ErrorMessage(): JSX.Element | null {
-  const error = useAppSelector(({ERROR}) => ERROR.error);
+  const error = useAppSelector(({[NameSpace.Error]: errorState}) => errorState.error);
 
   if (error) {
     return (

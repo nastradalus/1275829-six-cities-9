@@ -7,6 +7,7 @@ import {useEffect} from 'react';
 import {fetchFavoriteOffersAction} from '../../store/api-actions';
 import {loadFavoriteOffers} from '../../store/offers-data/offers-data';
 import LoadingScreen from '../../components/loading-screen/loading-screen';
+import {NameSpace} from '../../const';
 
 const sortOffersByCity = (offers: Offer[]): OffersByCity => {
   const offersByCity: OffersByCity = {};
@@ -24,7 +25,7 @@ const sortOffersByCity = (offers: Offer[]): OffersByCity => {
 
 function Favorites(): JSX.Element {
   const dispatch = useAppDispatch();
-  const offers = useAppSelector(({OFFERS}) => OFFERS.favoriteOffers);
+  const offers = useAppSelector(({[NameSpace.Offers]: offersState}) => offersState.favoriteOffers);
   const favoriteOffers = sortOffersByCity(offers);
 
   useEffect(() => {

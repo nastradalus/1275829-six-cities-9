@@ -2,10 +2,11 @@ import SortForm from '../sort-form/sort-form';
 import Map from '../map/map';
 import {useAppSelector} from '../../hooks';
 import OffersList from '../offers-list/offers-list';
+import {NameSpace} from '../../const';
 
 function OfferAndMap(): JSX.Element {
-  const activeCity = useAppSelector((({OFFERS}) => OFFERS.city));
-  const cityOffers = useAppSelector((({OFFERS}) => OFFERS.cityOffers));
+  const activeCity = useAppSelector((({[NameSpace.Offers]: offers}) => offers.city));
+  const cityOffers = useAppSelector((({[NameSpace.Offers]: offers}) => offers.cityOffers));
 
   return (
     <div className="cities">

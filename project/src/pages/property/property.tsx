@@ -6,27 +6,49 @@ import Map from '../../components/map/map';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import {useEffect} from 'react';
 import {ParamId} from '../../types/types';
-import {useParams} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import {fetchOfferDataAction, updateFavoriteStatusAction} from '../../store/api-actions';
-import {loadOffer, loadReviews, loadNearOffers} from '../../store/offer-data/offer-data';
+import {loadNearOffers, loadOffer, loadReviews, updateCurrentOfferFavoriteStatus} from '../../store/offer-data/offer-data';
 import LoadingScreen from '../../components/loading-screen/loading-screen';
 import {getPercentFromRate} from '../../tools';
-import {updateOfferFavoriteStatus} from '../../store/offer-data/offer-data';
 import {updateFavoriteStatus} from '../../store/offers-data/offers-data';
-import {DEFAULT_POINT_ID} from '../../const';
+import {AppRoute, AuthorizationStatus, NameSpace} from '../../const';
+import {setActivePoint} from '../../store/point-data/point-data';
 
 function Property(): JSX.Element {
   const {id: currentOfferId} = useParams<ParamId>();
+  const authorizationStatus = useAppSelector(({[NameSpace.User]: user}) => user.authorizationStatus);
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const offer = useAppSelector(({OFFER}) => OFFER.currentOffer);
-  const nearOffers = useAppSelector(({OFFER}) => OFFER.nearOffers);
+  const offer = useAppSelector(({[NameSpace.Offer]: offerState}) => offerState.currentOffer);
+  const nearOffers = useAppSelector(({[NameSpace.Offer]: offerState}) => offerState.nearOffers);
+  const mapOffers = nearOffers.slice();
+
+  if (offer) {
+    mapOffers.push(offer);
+    dispatch(setActivePoint(offer.id));
+  }
 
   const percent = (offer) ? getPercentFromRate(offer.rating) : '';
 
   const updateFavoriteStatusHandle = (id: number, status: boolean) => {
-    dispatch(updateOfferFavoriteStatus({id, status}));
+    dispatch(updateCurrentOfferFavoriteStatus({id, status}));
     dispatch(updateFavoriteStatus({id, status}));
+  };
+
+  const bookmarkClickHandler = () => {
+    if (authorizationStatus !== AuthorizationStatus.Auth) {
+      navigate(AppRoute.SignIn);
+    }
+
+    if (offer) {
+      dispatch(updateFavoriteStatusAction({
+        offerId: offer.id,
+        favoriteStatus: !offer.isFavorite,
+        onUpdateStatus: updateFavoriteStatusHandle,
+      }));
+    }
   };
 
   useEffect(() => {
@@ -51,7 +73,7 @@ function Property(): JSX.Element {
             <div className="property__gallery-container container">
               <div className="property__gallery">
                 {
-                  offer.images.map((image, index) =>
+                  offer.images.slice(0, 6).map((image, index) =>
                     (
                       <div key={index.toString()} className="property__image-wrapper">
                         <img className="property__image" src={image} alt="Place image"/>
@@ -78,13 +100,7 @@ function Property(): JSX.Element {
                   <button
                     className={`property__bookmark-button button ${offer?.isFavorite ? 'property__bookmark-button--active' : ''}`}
                     type="button"
-                    onClick={() => {
-                      dispatch(updateFavoriteStatusAction({
-                        offerId: currentOfferId ? +currentOfferId : DEFAULT_POINT_ID,
-                        favoriteStatus: !offer?.isFavorite,
-                        updateStatusHandle: updateFavoriteStatusHandle,
-                      }));
-                    }}
+                    onClick={bookmarkClickHandler}
                   >
                     <svg className="property__bookmark-icon" width="31" height="33">
                       <use xlinkHref="#icon-bookmark"/>
@@ -138,7 +154,7 @@ function Property(): JSX.Element {
               nearOffers.length
                 ?
                 <section className="property__map map">
-                  <Map offers={nearOffers}/>
+                  <Map offers={mapOffers}/>
                 </section>
                 : null
             }

@@ -8,7 +8,7 @@ const initialState: {
 };
 
 export const pointData = createSlice({
-  name: NameSpace.point,
+  name: NameSpace.Point,
   initialState,
   reducers: {
     setActivePoint: (state, action) => {

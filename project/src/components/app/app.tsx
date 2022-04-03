@@ -1,5 +1,5 @@
-import {Route, Routes, Navigate} from 'react-router-dom';
-import {AppRoute, AuthorizationStatus} from '../../const';
+import {Navigate, Route, Routes} from 'react-router-dom';
+import {AppRoute, AuthorizationStatus, NameSpace} from '../../const';
 import Main from '../../pages/main/main';
 import Login from '../../pages/login/login';
 import Favorites from '../../pages/favorites/favorites';
@@ -16,8 +16,8 @@ const isUnknownAuth = (authorizationStatus: AuthorizationStatus): boolean =>
   authorizationStatus === AuthorizationStatus.Unknown;
 
 function App(): JSX.Element {
-  const authorizationStatus = useAppSelector(({USER}) => USER.authorizationStatus);
-  const isDataLoaded = useAppSelector(({OFFERS}) => OFFERS.isDataLoaded);
+  const authorizationStatus = useAppSelector(({[NameSpace.User]: user}) => user.authorizationStatus);
+  const isDataLoaded = useAppSelector(({[NameSpace.Offers]: offers}) => offers.isDataLoaded);
 
   if (isUnknownAuth(authorizationStatus) || !isDataLoaded) {
     return (

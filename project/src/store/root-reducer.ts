@@ -7,9 +7,9 @@ import {errorProcess} from './error-process/error-process';
 import {pointData} from './point-data/point-data';
 
 export const rootReducer = combineReducers({
-  [NameSpace.offers]: offersData.reducer,
-  [NameSpace.offer]: offerData.reducer,
-  [NameSpace.user]: userData.reducer,
-  [NameSpace.error]: errorProcess.reducer,
-  [NameSpace.point]: pointData.reducer,
+  [NameSpace.Offers]: offersData.reducer,
+  [NameSpace.Offer]: offerData.reducer,
+  [NameSpace.User]: userData.reducer,
+  [NameSpace.Error]: errorProcess.reducer,
+  [NameSpace.Point]: pointData.reducer,
 });

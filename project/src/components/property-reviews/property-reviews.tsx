@@ -1,7 +1,16 @@
 import PropertyReviewForm from '../property-review-form/property-review-form';
-import {AuthorizationStatus, DateFormat, MONTHS} from '../../const';
+import {AuthorizationStatus, DateFormat, MONTHS, NameSpace} from '../../const';
 import {useAppSelector} from '../../hooks';
 import {getPercentFromRate} from '../../tools';
+import {memo} from 'react';
+import {Review} from '../../types/types';
+
+const sortReviews = (reviews: Review[]): Review[] => reviews.slice().sort((next, current) => {
+  const currentDate = new Date(Date.parse(current.date)).getTime();
+  const nextDate = new Date(Date.parse(next.date)).getTime();
+
+  return (currentDate - nextDate);
+});
 
 const getZeroRoundMonth = (target: number): string => (target < 10) ? `0${target}` : `${target}`;
 
@@ -23,15 +32,15 @@ const getFormatDate = (date: string, format: string): string => {
 };
 
 function PropertyReviews(): JSX.Element {
-  const reviews = useAppSelector(({OFFER}) => OFFER.reviews);
-  const authorizationStatus = useAppSelector(({USER}) => USER.authorizationStatus);
+  const reviews = useAppSelector(({[NameSpace.Offer]: offer}) => offer.reviews);
+  const authorizationStatus = useAppSelector(({[NameSpace.User]: user}) => user.authorizationStatus);
 
   return (
     <section className="property__reviews reviews">
       <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviews.length}</span></h2>
       <ul className="reviews__list">
         {
-          reviews.map(({user, rating, comment, date}, index) => (
+          sortReviews(reviews).slice(0, 10).map(({user, rating, comment, date}, index) => (
             <li className="reviews__item" key={index.toString()}>
               <div className="reviews__user user">
                 <div className="reviews__avatar-wrapper user__avatar-wrapper">
@@ -67,4 +76,4 @@ function PropertyReviews(): JSX.Element {
   );
 }
 
-export default PropertyReviews;
+export default memo(PropertyReviews);

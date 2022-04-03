@@ -1,7 +1,7 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {api} from './index';
 import {store} from './index';
-import {APIRoute, AppRoute, AuthorizationStatus, Placeholder, TIMEOUT_SHOW_ERROR} from '../const';
+import {ApiRoute, AppRoute, AuthorizationStatus, Placeholder, TIMEOUT_SHOW_ERROR} from '../const';
 import {errorHandle} from '../services/error-handle';
 import {
   AddReviewActionProps,
@@ -12,7 +12,7 @@ import {
   Review, UpdateFavoriteStatusActionProps
 } from '../types/types';
 import {redirectToRoute} from './action';
-import {addReview, loadNearOffers, loadOffer, loadReviews} from './offer-data/offer-data';
+import {addReview, loadNearOffers, loadOffer, loadReviews, enableForm} from './offer-data/offer-data';
 import {loadOffers, loadFavoriteOffers, resetDataLoading} from './offers-data/offers-data';
 import {requireAuthorization, setUserInfo} from './user-data/user-data';
 import {setError} from './error-process/error-process';
@@ -36,7 +36,7 @@ export const fetchOffersAction = createAsyncThunk(
   async () => {
     try {
       store.dispatch(resetDataLoading());
-      const {data} = await api.get<Offer[]>(APIRoute.Offers);
+      const {data} = await api.get<Offer[]>(ApiRoute.Offers);
       store.dispatch(loadOffers(data));
     } catch (error) {
       errorHandle(error);
@@ -48,7 +48,7 @@ export const fetchFavoriteOffersAction = createAsyncThunk(
   'api/fetchFavoriteOffers',
   async () => {
     try {
-      const {data} = await api.get<Offer[]>(APIRoute.Favorites);
+      const {data} = await api.get<Offer[]>(ApiRoute.Favorites);
       store.dispatch(loadFavoriteOffers(data));
     } catch (error) {
       errorHandle(error);
@@ -60,9 +60,9 @@ export const fetchOfferDataAction = createAsyncThunk(
   'api/fetchOfferData',
   async (offerId: number) => {
     try {
-      const {data: offerData} = await api.get<Offer>(getOfferApiUrl(APIRoute.Offer, offerId));
-      const {data: reviews} = await api.get<Review[]>(getOfferApiUrl(APIRoute.OfferComments, offerId));
-      const {data: nearOffers} = await api.get<Offer[]>(getOfferApiUrl(APIRoute.NearOffer, offerId));
+      const {data: offerData} = await api.get<Offer>(getOfferApiUrl(ApiRoute.Offer, offerId));
+      const {data: reviews} = await api.get<Review[]>(getOfferApiUrl(ApiRoute.OfferComments, offerId));
+      const {data: nearOffers} = await api.get<Offer[]>(getOfferApiUrl(ApiRoute.NearOffer, offerId));
 
       store.dispatch(loadOffer(offerData));
       store.dispatch(loadReviews(reviews));
@@ -85,11 +85,13 @@ export const addReviewAction = createAsyncThunk(
   ) => {
     try {
       const {data} = await api.post<Review[]>(
-        getOfferApiUrl(APIRoute.AddOfferComment, offerId),
+        getOfferApiUrl(ApiRoute.AddOfferComment, offerId),
         {comment, rating},
       );
       store.dispatch(addReview(data));
+      store.dispatch(enableForm());
     } catch (error) {
+      store.dispatch(enableForm());
       errorHandle(error);
     }
   },
@@ -101,14 +103,14 @@ export const updateFavoriteStatusAction = createAsyncThunk(
     {
       offerId,
       favoriteStatus,
-      updateStatusHandle,
+      onUpdateStatus,
     }: UpdateFavoriteStatusActionProps,
   ) => {
     try {
       const {data} = await api.post<Offer>(
-        getFavoriteStatusApiUrl(APIRoute.SetFavoriteStatus, offerId, favoriteStatus),
+        getFavoriteStatusApiUrl(ApiRoute.SetFavoriteStatus, offerId, favoriteStatus),
       );
-      updateStatusHandle(data.id, data.isFavorite);
+      onUpdateStatus(data.id, data.isFavorite);
     } catch (error) {
       errorHandle(error);
     }
@@ -129,7 +131,7 @@ export const checkAuthAction = createAsyncThunk(
   'api/checkAuth',
   async () => {
     try {
-      const {data} = await api.get<Profile>(APIRoute.Login);
+      const {data} = await api.get<Profile>(ApiRoute.Login);
       store.dispatch(setUserInfo(cutProfile(data)));
       store.dispatch(requireAuthorization(AuthorizationStatus.Auth));
     } catch (error) {
@@ -144,7 +146,7 @@ export const loginAction = createAsyncThunk(
   'api/login',
   async ({login: email, password}: AuthData) => {
     try {
-      const {data} = await api.post<Profile>(APIRoute.Login, {email, password});
+      const {data} = await api.post<Profile>(ApiRoute.Login, {email, password});
       saveToken(data.token);
       store.dispatch(setUserInfo(cutProfile(data)));
       store.dispatch(requireAuthorization(AuthorizationStatus.Auth));
@@ -161,7 +163,7 @@ export const logoutAction = createAsyncThunk(
   'api/logout',
   async () => {
     try {
-      await api.delete(APIRoute.Logout);
+      await api.delete(ApiRoute.Logout);
       dropToken();
       store.dispatch(setUserInfo(null));
       store.dispatch(requireAuthorization(AuthorizationStatus.NoAuth));

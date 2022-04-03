@@ -1,9 +1,11 @@
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import {changeCity} from '../../store/offers-data/offers-data';
+import {NameSpace} from '../../const';
+import {memo} from 'react';
 
 function LocationList(): JSX.Element {
-  const activeCity = useAppSelector((({OFFERS}) => OFFERS.city));
-  const cities = useAppSelector((({OFFERS}) => OFFERS.cities));
+  const activeCity = useAppSelector(({[NameSpace.Offers]: offers}) => offers.city);
+  const cities = useAppSelector((({[NameSpace.Offers]: offers}) => offers.cities));
   const dispatch = useAppDispatch();
 
   return (
@@ -28,4 +30,4 @@ function LocationList(): JSX.Element {
   );
 }
 
-export default LocationList;
+export default memo(LocationList);

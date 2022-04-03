@@ -1,4 +1,4 @@
-import {AppRoute, AuthorizationStatus, DEFAULT_POINT_ID, OfferCardType} from '../../const';
+import {AppRoute, AuthorizationStatus, DEFAULT_POINT_ID, NameSpace, OfferCardType} from '../../const';
 import {Offer} from '../../types/types';
 import {Link, useNavigate} from 'react-router-dom';
 import {getPercentFromRate} from '../../tools';
@@ -6,6 +6,7 @@ import {setActivePoint} from '../../store/point-data/point-data';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import {updateFavoriteStatusAction} from '../../store/api-actions';
 import {updateFavoriteStatus} from '../../store/offers-data/offers-data';
+import {updateNearOffersFavoriteStatus} from '../../store/offer-data/offer-data';
 
 type OfferCardProps = {
   place: Offer,
@@ -14,7 +15,7 @@ type OfferCardProps = {
 
 function OfferCard({place, offerCardType}: OfferCardProps): JSX.Element {
   const {id: offerId, title, type, isPremium, isFavorite, rating, images, price} = place;
-  const authorizationStatus = useAppSelector(({USER}) => USER.authorizationStatus);
+  const authorizationStatus = useAppSelector(({[NameSpace.User]: user}) => user.authorizationStatus);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -32,11 +33,15 @@ function OfferCard({place, offerCardType}: OfferCardProps): JSX.Element {
       ? 'near-places__image-wrapper'
       : 'cities__place-card';
 
-  const updateFavoriteStatusHandle = (id: number, status: boolean) => {
+  const handleFavoriteStatusUpdate = (id: number, status: boolean) => {
     dispatch(updateFavoriteStatus({id, status}));
+
+    if (offerCardType === OfferCardType.NearPlaces) {
+      dispatch(updateNearOffersFavoriteStatus({id, status}));
+    }
   };
 
-  const bookmarkClickHandler = () => {
+  const handlerBookmarkClick = () => {
     if (authorizationStatus !== AuthorizationStatus.Auth) {
       navigate(AppRoute.SignIn);
     }
@@ -44,15 +49,27 @@ function OfferCard({place, offerCardType}: OfferCardProps): JSX.Element {
     dispatch(updateFavoriteStatusAction({
       offerId: offerId,
       favoriteStatus: !isFavorite,
-      updateStatusHandle: updateFavoriteStatusHandle,
+      onUpdateStatus: handleFavoriteStatusUpdate,
     }));
+  };
+
+  const handlerCardMouseEnter = () => {
+    if (offerCardType !== OfferCardType.NearPlaces) {
+      dispatch(setActivePoint(offerId));
+    }
+  };
+
+  const handlerCardMouseLeave = () => {
+    if (offerCardType !== OfferCardType.NearPlaces) {
+      dispatch(setActivePoint(DEFAULT_POINT_ID));
+    }
   };
 
   return (
     <article
       className={`${articleClass} place-card`}
-      onMouseEnter={() => dispatch(setActivePoint(offerId))}
-      onMouseLeave={() => dispatch(setActivePoint(DEFAULT_POINT_ID))}
+      onMouseEnter={handlerCardMouseEnter}
+      onMouseLeave={handlerCardMouseLeave}
     >
       {
         isPremium
@@ -86,7 +103,7 @@ function OfferCard({place, offerCardType}: OfferCardProps): JSX.Element {
           <button
             className={bookmarkButtonClass}
             type="button"
-            onClick={bookmarkClickHandler}
+            onClick={handlerBookmarkClick}
           >
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref="#icon-bookmark"/>

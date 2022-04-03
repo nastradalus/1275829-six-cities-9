@@ -2,9 +2,10 @@ import Header from '../../components/header/header';
 import LocationList from '../../components/location-list/location-list';
 import OfferAndMap from '../../components/offers-and-map/offers-and-map';
 import {useAppSelector} from '../../hooks';
+import {NameSpace} from '../../const';
 
 function Main(): JSX.Element {
-  const cityOffers = useAppSelector(({OFFERS}) => OFFERS.cityOffers);
+  const cityOffers = useAppSelector(({[NameSpace.Offers]: offers}) => offers.cityOffers);
 
   return (
     <div className="page page--gray page--main">

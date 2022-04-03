@@ -1,4 +1,4 @@
-import {AppRoute, AuthorizationStatus} from '../../const';
+import {AppRoute, AuthorizationStatus, NameSpace} from '../../const';
 import {Link} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import {fetchOffersAction, logoutAction} from '../../store/api-actions';
@@ -9,7 +9,7 @@ type HeaderProps = {
 };
 
 function Header({isLoginPage = false}: HeaderProps): JSX.Element {
-  const {profile, authorizationStatus} = useAppSelector(({USER}) => USER);
+  const {profile, authorizationStatus} = useAppSelector(({[NameSpace.User]: user}) => user);
   const dispatch = useAppDispatch();
 
   return (

@@ -2,23 +2,13 @@ import {createSlice} from '@reduxjs/toolkit';
 import {NameSpace, SortType} from '../../const';
 import {City, Offer} from '../../types/types';
 import {cities as allCities} from '../../cities';
+import {updateOfferFavoriteStatus} from '../../tools';
 
 const DEFAULT_CITY_INDEX = 0;
 const DEFAULT_CITY = allCities[DEFAULT_CITY_INDEX];
 const DEFAULT_SORT = SortType.Popular;
 
 const getOffersByCity = (offers: Offer[], currentCity: City): Offer[] => offers.filter(({city}) => city.name === currentCity.name);
-
-const updateOfferFavoriteStatus = (offers: Offer[], id: number, status: boolean): Offer[] => {
-  for (const offer of offers) {
-    if (offer.id === id) {
-      offer.isFavorite = status;
-      return offers;
-    }
-  }
-
-  return offers;
-};
 
 const initialState: {
   cities: City[],
@@ -41,7 +31,7 @@ const initialState: {
 };
 
 export const offersData = createSlice({
-  name: NameSpace.offers,
+  name: NameSpace.Offers,
   initialState,
   reducers: {
     resetDataLoading: (state) => {

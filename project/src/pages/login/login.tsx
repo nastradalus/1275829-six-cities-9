@@ -1,10 +1,18 @@
 import Header from '../../components/header/header';
-import {AppRoute} from '../../const';
+import {AppRoute, LoginFormMessageError} from '../../const';
 import {FormEvent, useRef} from 'react';
 import {useAppDispatch} from '../../hooks';
 import {Link} from 'react-router-dom';
-import {AuthData} from '../../types/types';
 import {loginAction} from '../../store/api-actions';
+import {setError} from '../../store/error-process/error-process';
+import {clearErrorAction} from '../../store/api-actions';
+
+const validateEmail = (email: string): boolean => !!email.toLowerCase()
+  .match(
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+  );
+
+const validatePassword = (password: string): boolean => !!password.match(/([a-zA-Z]\d|\d[a-zA-Z])/);
 
 function Login(): JSX.Element {
   const loginRef = useRef<HTMLInputElement | null>(null);
@@ -12,18 +20,30 @@ function Login(): JSX.Element {
 
   const dispatch = useAppDispatch();
 
-  const onSubmit = (authData: AuthData) => {
-    dispatch(loginAction(authData));
+  const validateForm = (): boolean => {
+    if (loginRef.current && !validateEmail(loginRef.current.value)) {
+      dispatch(setError(LoginFormMessageError.Email));
+      dispatch(clearErrorAction());
+      return false;
+    }
+
+    if (passwordRef.current && !validatePassword(passwordRef.current.value)) {
+      dispatch(setError(LoginFormMessageError.Password));
+      dispatch(clearErrorAction());
+      return false;
+    }
+
+    return true;
   };
 
-  const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+  const formSubmitHandle = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
 
-    if (loginRef.current !== null && passwordRef.current !== null) {
-      onSubmit({
+    if (loginRef.current && passwordRef.current && validateForm()) {
+      dispatch(loginAction({
         login: loginRef.current.value,
         password: passwordRef.current.value,
-      });
+      }));
     }
   };
 
@@ -39,7 +59,7 @@ function Login(): JSX.Element {
               className="login__form form"
               action="#"
               method="post"
-              onSubmit={handleSubmit}
+              onSubmit={formSubmitHandle}
             >
               <div className="login__input-wrapper form__input-wrapper">
                 <label className="visually-hidden">E-mail</label>
